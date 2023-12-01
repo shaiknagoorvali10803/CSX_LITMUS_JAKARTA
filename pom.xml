@@ -30,45 +30,30 @@
 		<junit-jupiter.version>5.10.0</junit-jupiter.version>
 	</properties>-->
 
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.1.5</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-
 	<properties>
+		<java.version>17</java.version>
+		<project.Automatic-Module-Name>io.cucumber.cdi.jakarta</project.Automatic-Module-Name>
+		<apiguardian-api.version>1.1.2</apiguardian-api.version>
+		<xbean.version>4.24</xbean.version>
+		<jakarta.enterprise.cdi-api.version>4.0.1</jakarta.enterprise.cdi-api.version>
+		<jakarta.activation-api.version>2.1.2</jakarta.activation-api.version>
+		<junit-jupiter.version>5.10.0</junit-jupiter.version>
+		<weld.version>5.1.2.Final</weld.version>
 		<java.version>17</java.version>
 		<selenium.version>4.13.0</selenium.version>
 		<webdrivermanager.version>5.6.2</webdrivermanager.version>
 		<cucumber.version>7.13.0</cucumber.version>
-		<spring.version>3.1.5</spring.version>
-		<junit-jupiter.version>5.10.0</junit-jupiter.version>
 	</properties>
 
-	<!-- Dependency Management will propagate the dependency version and scope to the children POM's if the dependency is declared. -->
-	<!-- Dependencies are managed not resolved. -->
 	<dependencyManagement>
 		<dependencies>
-			<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-bom -->
 			<dependency>
 				<groupId>io.cucumber</groupId>
 				<artifactId>cucumber-bom</artifactId>
-				<version>${cucumber.version}</version>
+				<version>7.14.0</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-parent</artifactId>
-				<version>${spring.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-
-			<!-- https://mvnrepository.com/artifact/org.junit/junit-bom -->
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
@@ -80,32 +65,19 @@
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-test -->
+
+		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-core -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-core</artifactId>
+			<version>${cucumber.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jdbc -->
+		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jdbc</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>${spring.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-mongodb -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-			<version>${spring.version}</version>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-junit-platform-engine -->
@@ -113,6 +85,44 @@
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit-platform-engine</artifactId>
 			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/io.cucumber/gherkin -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>gherkin</artifactId>
+			<version>25.0.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apiguardian/apiguardian-api -->
+		<dependency>
+			<groupId>org.apiguardian</groupId>
+			<artifactId>apiguardian-api</artifactId>
+			<version>${apiguardian-api.version}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/jakarta.enterprise/jakarta.enterprise.cdi-api -->
+		<dependency>
+			<groupId>jakarta.enterprise</groupId>
+			<artifactId>jakarta.enterprise.cdi-api</artifactId>
+			<version>${jakarta.enterprise.cdi-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/jakarta.activation/jakarta.activation-api -->
+		<dependency>
+			<groupId>jakarta.activation</groupId>
+			<artifactId>jakarta.activation-api</artifactId>
+			<version>${jakarta.activation-api.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jboss.weld.se/weld-se-core -->
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
+			<version>${weld.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -128,8 +138,10 @@
 		<dependency>
 			<groupId>org.junit.platform</groupId>
 			<artifactId>junit-platform-suite</artifactId>
+			<version>1.10.1</version>
 			<scope>test</scope>
 		</dependency>
+
 
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params -->
 		<dependency>
@@ -174,27 +186,6 @@
 			<version>${webdrivermanager.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-java -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>${cucumber.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-spring -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-spring</artifactId>
-			<version>${cucumber.version}</version>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/io.cucumber/gherkin -->
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>gherkin</artifactId>
-			<version>25.0.2</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
 		<dependency>
 			<groupId>org.apache.poi</groupId>
@@ -214,6 +205,13 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.11.0</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.14.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/ru.yandex.qatools.ashot/ashot -->
@@ -280,6 +278,13 @@
 			<version>2.16.0</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20231013</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
 		<dependency>
 			<groupId>org.asynchttpclient</groupId>
@@ -302,12 +307,34 @@
 			<version>0.7.7.0</version>
 		</dependency>
 
-<!--		<dependency>-->
-<!--			<groupId>com.csx.test</groupId>-->
-<!--			<artifactId>litmus-util</artifactId>-->
-<!--			<version>0.0.4</version>-->
-<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/org.aeonbits.owner/owner -->
+		<dependency>
+			<groupId>org.aeonbits.owner</groupId>
+			<artifactId>owner</artifactId>
+			<version>1.0.12</version>
+		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.hamcrest/hamcrest-core -->
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+			<version>2.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.9</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.21.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -328,7 +355,6 @@
 					<configuration>
 						<systemPropertyVariables>
 							<java.awt.headless>false</java.awt.headless>
-							<spring.profiles.active>UAT</spring.profiles.active>
 						</systemPropertyVariables>
 						<test>**/*Test.java</test>
 					</configuration>

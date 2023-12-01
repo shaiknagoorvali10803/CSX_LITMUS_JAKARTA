@@ -1,38 +1,33 @@
-package com.csx.stepdefinitions;
+package com.csx.stepDefinitions;
 
+import com.csx.page.actions.CsxDemoPageActions;
 import com.csx.test.util.LoggingException;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.SeleniumUtil;
-import com.csx.page.actions.CsxDemoPageActions;
-import com.csx.springConfig.annotation.LazyAutowired;
+import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.Duration;
 
-@CucumberContextConfiguration
-@SpringBootTest
 public class CsxDemoStepDefinitions {
     private static final Logger LOGGER = LoggerFactory.getLogger(CsxDemoStepDefinitions.class);
-    @LazyAutowired
+    @Inject
     private CsxDemoPageActions pageActions;
-    @LazyAutowired
-    private WebDriver driver;
+    @Inject
+    private WebDriverProvider driver;
 
-    @LazyAutowired
+    @Inject
     ScreenshotUtils screenshotUtils;
     Scenario scenario;
-    @Autowired
+    @Inject
     ScenarioContext scenarioContext;
 
     @Before
@@ -46,25 +41,25 @@ public class CsxDemoStepDefinitions {
         switch (browserType) {
             case "mobile":
                 LOGGER.info("resizing window size for mobile");
-                SeleniumUtil.resizeWindowForMobile(driver);
+                SeleniumUtil.resizeWindowForMobile(driver.getInstance());
                 break;
             case "tablet":
                 LOGGER.info("resizing window size for tablet");
-                SeleniumUtil.resizeWindowForTablet(driver);
+                SeleniumUtil.resizeWindowForTablet(driver.getInstance());
                 break;
             case "desktop":
                 LOGGER.info("resizing window size for desktop");
             default:
                 SeleniumUtil.waitByTime(3000);
-                SeleniumUtil.maximizeWindow(driver);
+                SeleniumUtil.maximizeWindow(driver.getInstance());
                 break;
         }
     }
 
     @When("I navigate to csx.com")
     public void navigateToCsxWebsite() throws LoggingException, InterruptedException {
-        driver.get("https://www.csx.com");
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
+        driver.getInstance().get("https://www.csx.com");
+        driver.getInstance().manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
     }
 
     @Then("I should see the copyright information")

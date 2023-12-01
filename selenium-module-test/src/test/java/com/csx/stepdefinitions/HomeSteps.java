@@ -1,43 +1,29 @@
-package com.csx.stepdefinitions;
+package com.csx.stepDefinitions;
 
 import com.csx.page.actions.HomePageActions;
-import com.csx.springConfig.annotation.LazyAutowired;
-import io.cucumber.java.Before;
-import io.cucumber.java.Scenario;
+import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
+
 import jakarta.annotation.PostConstruct;
-import org.openqa.selenium.WebDriver;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
+@ApplicationScoped
 public class HomeSteps {
-    @LazyAutowired
+    @Inject
     private HomePageActions homePage;
-    @Autowired
-    protected WebDriver driver;
+    @Inject
+    protected WebDriverProvider driverProvider;
 
-    @Autowired
     protected WebDriverWait wait;
-
-    @Autowired
-    ScenarioContext scenarioContext;
 
     @PostConstruct
     private void init(){
-        PageFactory.initElements(this.driver, this);
+        PageFactory.initElements(this.driverProvider.getInstance(), this);
     }
-    Scenario scenario;
-    @Before
-    public void settingScenario(Scenario scenario) {
-        this.scenario=scenario;
-        scenarioContext.setScenario(scenario);
-        System.out.println("scenarion object in home page by : ==>"+ scenario );
-    }
-
 
     @Given("I am Google Page")
     public void launchSite() {

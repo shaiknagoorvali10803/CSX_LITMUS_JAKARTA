@@ -5,14 +5,14 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.csx.springConfig.annotation.Page;
 import io.cucumber.java.Scenario;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-@Page
+@ApplicationScoped
 public class ReportLogUtils {
 
     public static Logger logger = LoggerFactory.getLogger(ReportLogUtils.class);

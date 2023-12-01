@@ -1,5 +1,7 @@
 package com.csx.test.util;
 
+import com.csx.utils.AppConfigHolder;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Dimension;
@@ -32,6 +34,30 @@ public class SeleniumUtil {
     private static final String DROPDOWN_CLICKABLE_LABEL = "div/label";
     public static final int DRIVER_WAIT_TIME_IN_SECS = 30;
     private static int maxSyncTime = 60;
+
+    public static final String setApplicationURL(String environment) {
+        String url = "";
+        if ((environment == null ? AppConfigHolder.getInstance().environment() : environment).equalsIgnoreCase("QA")) {
+            url = AppConfigHolder.getInstance().applicationMELQAURL();
+        } else if ((environment == null ? AppConfigHolder.getInstance().environment() : environment).equalsIgnoreCase("DEV")) {
+            url = AppConfigHolder.getInstance().applicationMELDevURL();
+        } else if ((environment == null ? AppConfigHolder.getInstance().environment() : environment).equalsIgnoreCase("STG")) {
+            url = AppConfigHolder.getInstance().applicationMELStageURL();
+        }
+        return url;
+    }
+
+    public static final String setHeadlessProperty(String headlessMode) {
+        String isHeadLessSel = null;
+        isHeadLessSel= headlessMode == null ? AppConfigHolder.getInstance().headlessRun() : headlessMode;
+        return isHeadLessSel;
+    }
+
+    public static final String setRemoteExecution(String remoteRunMode) {
+        String isRemoteExecutionSel = null;
+        isRemoteExecutionSel= remoteRunMode == null ? AppConfigHolder.getInstance().remoteExecution() : remoteRunMode;
+        return isRemoteExecutionSel;
+    }
 
     /**
      * ---------------------------Maximize Window------------------------------------------
@@ -165,7 +191,7 @@ public class SeleniumUtil {
 
     /**
      * -------------------------------------------------------------------------------------------------------
-     * Set value to Element
+     * Set value to Element by xpath
      */
     public static void setValueToElementByXpath(final WebDriver driver, final String xpath, final String inputValue) {
         try {
@@ -178,6 +204,11 @@ public class SeleniumUtil {
             fail();
         }
     }
+
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     * Set value to Element by WebElement
+     */
 
     public static void setValueToElementByXpath(final WebDriver driver, final WebElement element,
                                                 final String inputValue) {
@@ -252,7 +283,7 @@ public class SeleniumUtil {
 
     /**
      * -------------------------------------------------------------------------------------------------------
-     * get Enable Disable by element
+     * get Enable Disable by Element
      */
     public static Boolean getEnableDisableByElement(final WebDriver driver, final WebElement webElement) {
         try {
@@ -265,6 +296,11 @@ public class SeleniumUtil {
         }
         return false;
     }
+
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     * get Enable Disable by Xpath
+     */
 
     public static Boolean getEnableDisableByElement(final WebDriver driver, String xPath) {
         try {
@@ -281,7 +317,7 @@ public class SeleniumUtil {
 
     /**
      * -------------------------------------------------------------------------------------------------------
-     * is Disable by element
+     * is Disable by WebElement
      */
     public static Boolean isDisableByElement(final WebDriver driver, final WebElement webElement) {
         try {
@@ -360,7 +396,22 @@ public class SeleniumUtil {
 
     /**
      * -------------------------------------------------------------------------------------------------------
-     * Mouse over Element
+     * Mouse over element select
+     */
+    public static void mouseOverElementSelect(final WebDriver driver, final WebElement webElement) {
+        try {
+            waitUntilVisibleByElement(driver, webElement);
+            final Actions actObj = new Actions(driver);
+            actObj.moveToElement(webElement).build().perform();
+        } catch (TimeoutException | NoSuchElementException ele) {
+            LOGGER.error(ERROR_MSG, ele);
+            fail();
+        }
+    }
+
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     * Mouse over Element by WebElement
      */
     public static void mouseOverElement(final WebDriver driver, final WebElement webElement) {
         try {
@@ -372,9 +423,10 @@ public class SeleniumUtil {
             fail();
         }
     }
+
     /**
      * -------------------------------------------------------------------------------------------------------
-     * Mouse over Element
+     * Mouse over Element by Xpath
      */
     public static void mouseOverElement(final WebDriver driver, String xpath) {
         try {
@@ -386,11 +438,11 @@ public class SeleniumUtil {
             fail();
         }
     }
-    public static void rightClickAndSelect(WebDriver driver, WebElement selectProElement, WebElement clickOption) {
-        Actions action = new Actions(driver);
-        action.contextClick(selectProElement).pause(1000).moveToElement(clickOption).click(clickOption).build().perform();
-    }
 
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     * Mouse over Element by WebElement Using JSExecutor
+     */
     public static void mouseOverElementByJS(final WebDriver driver, final WebElement element){
         String strJavaScript = "var element = arguments[0];"
                 + "var mouseEventObj = document.createEvent('MouseEvents');"
@@ -398,6 +450,33 @@ public class SeleniumUtil {
                 + "element.dispatchEvent(mouseEventObj);";
         JavascriptExecutor js =  (JavascriptExecutor) driver;
         js.executeScript(strJavaScript, element);
+    }
+
+    /**
+     * ---------------------------------------------------------------------------------------------------
+     * This Method is using action class and then will move to element and click on it
+     */
+
+    public static void moveToElementAndclick(final WebDriver driver, WebElement webElement) {
+        try {
+            final Wait<WebDriver> wait =
+                    new FluentWait<>(driver).pollingEvery(Duration.ofMillis(200)).withTimeout(Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS))
+                            .ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class);
+            wait.until(ExpectedConditions.elementToBeClickable(webElement));
+            Actions action = new Actions(driver);
+            action.moveToElement(webElement).click().build().perform();
+        } catch (TimeoutException e) {
+            LOGGER.error(ERROR_MSG, e);
+            fail();
+        }
+    }
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     * Mouse Right Click and Select Given Option
+     */
+    public static void rightClickAndSelect(WebDriver driver, WebElement selectProElement, WebElement clickOption) {
+        Actions action = new Actions(driver);
+        action.contextClick(selectProElement).pause(1000).moveToElement(clickOption).click(clickOption).build().perform();
     }
 
     /**
@@ -417,20 +496,7 @@ public class SeleniumUtil {
         }
     }
 
-    /**
-     * -------------------------------------------------------------------------------------------------------
-     * Mouse over element select
-     */
-    public static void mouseOverElementSelect(final WebDriver driver, final WebElement webElement) {
-        try {
-            waitUntilVisibleByElement(driver, webElement);
-            final Actions actObj = new Actions(driver);
-            actObj.moveToElement(webElement).build().perform();
-        } catch (TimeoutException | NoSuchElementException ele) {
-            LOGGER.error(ERROR_MSG, ele);
-            fail();
-        }
-    }
+
 
     /**
      * Navigate to URL
@@ -657,6 +723,10 @@ public class SeleniumUtil {
         return isEnabled;
     }
 
+    /**
+     * -------------------------------------------------------------------------------------------------------
+     * is element enabled with given TimeDelay
+     */
     public static boolean isElementEnabled(final WebDriver driver, final WebElement webElement,int time) {
         boolean flag =false;
         final WebDriverWait driverWait = new WebDriverWait(driver, Duration.ofSeconds(time));
@@ -1009,12 +1079,9 @@ public class SeleniumUtil {
         return null;
     }
 
-
-
     /**
      * ----This Method is for Sorting of Ascending&Descending Order---------------
      */
-
     public static void verifyAscendingAndDescending(final WebDriver driver, final String XPATH, final String elementName) {
         try {
             waitUntilVisibleByElements(driver, XPATH);
@@ -1030,6 +1097,10 @@ public class SeleniumUtil {
             fail();
         }
     }
+
+    /**
+     * ----Clear Text Field Using KeyBoard Controls---------------
+     */
 
     public static void clearTextField(final WebDriver driver, final WebElement webElement, final String inputValue) {
         try {
@@ -1061,7 +1132,7 @@ public class SeleniumUtil {
     }
 
     /**
-     * -------------------------------wait methods --------------------------------------
+     * -------------------------------Wait Until Clickable by ID --------------------------------------
      */
     public static void waitUntilClickById(final WebDriver driver, final String elementID) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
@@ -1069,120 +1140,199 @@ public class SeleniumUtil {
         wait.until(ExpectedConditions.elementToBeClickable(By.id(elementID)));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by Xpath ----------------------------------------------------
+     */
     public static void waitUntilClickByXpath(final WebDriver driver, final String xapth) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xapth)));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xapth)));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by Xpath with given time delay-------------------------------
+     */
     public static void waitUntilClickByXpath(final WebDriver driver, final String xapth, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(xapth)));
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath(xapth)));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by WebElement------------------------------------------------
+     */
     public static void waitUntilClickByElement(final WebDriver driver, final WebElement webElement) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         wait.until(ExpectedConditions.visibilityOf((webElement)));
         wait.until(ExpectedConditions.elementToBeClickable(webElement));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by WebElement with given delay-------------------------------
+     */
     public static void waitUntilClickByElementByTime(final WebDriver driver, final WebElement webElement, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         wait.until(ExpectedConditions.visibilityOf((webElement)));
         wait.until(ExpectedConditions.elementToBeClickable(webElement));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by Locator-------------------------------
+     */
     public static WebElement waitUntilClickByLocator(final WebDriver driver, final By locator) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by Locator with given time delay-------------------------------
+     */
     public static void waitUntilClickByLocatorByTime(final WebDriver driver, final By locator, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(locator));
         wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
-    public static WebElement waitUntilVisibleByXpath(final WebDriver driver, final String Xpath) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
-        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(Xpath)));
-    }
-
+    /**
+     * -------------------------------Wait Until Visible by ID-------------------------------
+     */
     public static void waitUntilVisibleById(final WebDriver driver, final String elementID) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(elementID)));
     }
 
+    /**
+     * -------------------------------Wait Until Visible by Locator-------------------------------
+     */
     public static WebElement waitUntilVisibleByLocator(final WebDriver driver, final By Locator) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(Locator));
     }
 
+    /**
+     * -------------------------------Wait Until Clickable by Xpath-------------------------------
+     */
+    public static WebElement waitUntilVisibleByXpath(final WebDriver driver, final String Xpath) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(Xpath)));
+    }
+
+    /**
+     * -------------------------------Wait Until Visible by Xpath with given delay-------------------------------
+     */
     public static WebElement waitUntilVisibleByXpathByTIme(final WebDriver driver, final String Xpath, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(Xpath)));
     }
 
+    /**
+     * -------------------------------Wait Until Visible by Element-------------------------------
+     */
     public static WebElement waitUntilVisibleByElement(final WebDriver driver, final WebElement element) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
+    /**
+     * -------------------------------Wait Until Visible by WebElement with given time delay-------------------------------
+     */
     public static WebElement waitUntilVisibleByElementByTIme(final WebDriver driver, final WebElement element, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.visibilityOf(element));
     }
 
-    public static WebElement waitUntilPresenceByXpath(final WebDriver driver, final String Xpath) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
-        return wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(Xpath)));
-    }
-
+    /**
+     * -------------------------------Wait Until Invisible by Xpath-------------------------------
+     */
     public static Boolean waitUntilInvisibleByXpath(final WebDriver driver, final String Xpath) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         return wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(Xpath)));
     }
 
+    /**
+     * -------------------------------Wait Until Invisible by Xpath with given time delay-------------------------------
+     */
     public static Boolean waitUntilInvisibleByXpathByTime(final WebDriver driver, final String Xpath, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(Xpath)));
     }
 
-    public static List<WebElement> waitUntilVisibleByElements(final WebDriver driver, final List<WebElement> webElements) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
-        return wait.until(ExpectedConditions.visibilityOfAllElements(webElements));
-    }
-    public static List<WebElement> waitUntilVisibleByElementsByTime(final WebDriver driver, final List<WebElement> webElements, int time) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
-        return wait.until(ExpectedConditions.visibilityOfAllElements(webElements));
-    }
-
-    public static List<WebElement> waitUntilVisibleByElements(final WebDriver driver, final String Xpath) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
-        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(Xpath)));
-    }
-    public static List<WebElement> waitUntilVisibleByElementsByTime(final WebDriver driver, final String Xpath, int time) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
-        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(Xpath)));
-    }
-
+    /**
+     * -------------------------------Wait Until Invisible by WebElement-------------------------------
+     */
     public static Boolean waitUntilInvisibleByElement(final WebDriver driver, final WebElement element) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         return wait.until(ExpectedConditions.invisibilityOf(element));
     }
 
+    /**
+     * -------------------------------Wait Until Invisible by WebElement with given time delay-------------------------------
+     */
+    public static Boolean waitUntilInvisibleByElementByTime(final WebDriver driver, final WebElement element,int time) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
+        return wait.until(ExpectedConditions.invisibilityOf(element));
+    }
+
+    /**
+     * -------------------------------Wait Until List of Element Visible by WebElements-------------------------------
+     */
+    public static List<WebElement> waitUntilVisibleByElements(final WebDriver driver, final List<WebElement> webElements) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
+        return wait.until(ExpectedConditions.visibilityOfAllElements(webElements));
+    }
+
+    /**
+     * -------------------------------Wait Until List of Element Visible by WebElements with given time delay-------------------------------
+     */
+    public static List<WebElement> waitUntilVisibleByElementsByTime(final WebDriver driver, final List<WebElement> webElements, int time) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
+        return wait.until(ExpectedConditions.visibilityOfAllElements(webElements));
+    }
+
+    /**
+     * -------------------------------Wait Until List of Element Visible by Xpath-------------------------------
+     */
+    public static List<WebElement> waitUntilVisibleByElements(final WebDriver driver, final String Xpath) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(Xpath)));
+    }
+
+    /**
+     * -------------------------------Wait Until List of Element Visible by Xpath with given time delay-----------------
+     */
+    public static List<WebElement> waitUntilVisibleByElementsByTime(final WebDriver driver, final String Xpath, int time) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
+        return wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(Xpath)));
+    }
+
+    /**
+     * -------------------------------Wait Until List of Element Visible by Locator with given time delay-----------------
+     */
+    public static List<WebElement> waitForElementsByTime(WebDriver driver, By element, int timeout) {
+        new WebDriverWait(driver, Duration.ofSeconds(timeout)).until(ExpectedConditions.visibilityOfElementLocated(element));
+        return driver.findElements(element);
+    }
+
+    /**
+     * -------------------------------Wait Until given page title matches with given title String-----------------------
+     */
     public static Boolean waitUntilTitleDisplays(final WebDriver driver, final String title) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
         return wait.until(ExpectedConditions.titleContains(title));
     }
 
+    /**
+     * --------------Wait Until given page title matches with given title String with given time delay------------------
+     */
     public static Boolean waitUntilTitleDisplaysByTime(final WebDriver driver, final String title, int time) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(time));
         return wait.until(ExpectedConditions.titleContains(title));
     }
 
+    /**
+     * --------------put the current thread into sleep for given time delay---------------------------------------------
+     */
     public static void waitByTime(int time) {
         try {
             Thread.sleep(time);
@@ -1192,12 +1342,19 @@ public class SeleniumUtil {
         }
     }
 
+    /**
+     * --------------Fluent Wait Object ---------------------------------------------
+     */
     public static FluentWait webDriverFluentWait(WebDriver driver) {
         return new FluentWait(driver)
                 .withTimeout(Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS))
                 .pollingEvery(Duration.ofSeconds(3))
                 .ignoring(NoSuchElementException.class, NoSuchFrameException.class);
     }
+
+    /**
+     * --------------Fluent Wait Object with given time delay ---------------------------------------------
+     */
 
     public static FluentWait webDriverFluentWait(WebDriver driver, int time) {
         return new FluentWait(driver)
@@ -1206,15 +1363,9 @@ public class SeleniumUtil {
                 .ignoring(NoSuchElementException.class, NoSuchFrameException.class);
     }
 
-    public static List<WebElement> waitForElementsByTime(WebDriver driver, By element, int timeout) {
-        new WebDriverWait(driver, Duration.ofSeconds(timeout)).until(ExpectedConditions.visibilityOfElementLocated(element));
-        return driver.findElements(element);
-    }
-
-    public static List<WebElement> waitForElements(WebDriver driver, By element) {
-        return waitForElementsByTime(driver, element, DRIVER_WAIT_TIME_IN_SECS);
-    }
-
+    /**
+     * --------------wait until visible By Fluent wait by Locator  ---------------------------------------------
+     */
     public static void fluentWaitForElementLoading(WebDriver driver, final By byElement) {
         try {
             Wait<WebDriver> wait = new FluentWait<WebDriver>(driver)
@@ -1223,7 +1374,7 @@ public class SeleniumUtil {
                     .ignoring(NoSuchElementException.class)
                     .ignoring(StaleElementReferenceException.class)
                     .ignoring(TimeoutException.class);
-            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(byElement));
+            WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(byElement));
             if (!element.isDisplayed()) {
                 LOGGER.info("Element " + byElement + " is not displayed");
             }
@@ -1232,6 +1383,9 @@ public class SeleniumUtil {
         }
     }
 
+    /**
+     * --------------wait until loading Element disappear by WebElement  ---------------------------------------------
+     */
     public static void waitTillLoadingCompletes(WebDriver driver, final WebElement element) {
         try {
             long start = System.currentTimeMillis();
@@ -1255,11 +1409,80 @@ public class SeleniumUtil {
     }
 
     /**
-     * -----wait untill DOM load  ---------
+     * --------------wait until loading Element disappear  ---------------------------------------------
+     */
+    public static void waitTillLoadingCompletes(WebElement element) {
+        try {
+            long start = System.currentTimeMillis();
+            int elapsedTime = 0;
+            waitByTime(500);
+            while (element.isDisplayed()) {
+                if (elapsedTime > maxSyncTime) {
+                    break;
+                }
+                waitByTime(500);
+                elapsedTime = Math.round((System.currentTimeMillis() - start) / 1000F);
+            }
+        } catch (Exception e) {
+            if ((e.toString().contains("NoSuchElementException") || e.getMessage().contains("NoStale"))) {
+            } else {
+
+            }
+        }
+    }
+
+    /**
+     * --------------wait for List of Elements displayed by WebElements  ---------------------------------------------
+     */
+
+    public static void waitForElementsDisplayed(WebDriver driver, List<WebElement> elements) {
+        try {
+            waitUntilVisibleByElements(driver, elements);
+        } catch (Exception e) {
+            LOGGER.info("no Elements visible ");
+        }
+    }
+
+    /**
+     * --------------wait for List of Elements displayed by WebElements with given time delay ---------------------------------------------
+     */
+
+    public static void waitForElementsDisplayed(WebDriver driver, List<WebElement> elements, int time) {
+        try {
+            waitUntilVisibleByElementsByTime(driver, elements,time);
+        } catch (Exception e) {
+            LOGGER.info("no Elements visible ");
+        }
+    }
+
+    /**
+     * --------------wait for List of Elements displayed by Xpath  ---------------------------------------------
+     */
+    public static void waitForElementsDisplayed(WebDriver driver, String xpath) {
+        try {
+            waitUntilVisibleByElements(driver, xpath);
+        } catch (Exception e) {
+            LOGGER.info("no Elements visible ");
+        }
+    }
+
+    /**
+     * --------------wait for List of Elements displayed by Xpath with given time delay ---------------------------------------------
+     */
+    public static void waitForElementsDisplayed(WebDriver driver, String xpath, int time) {
+        try {
+            waitUntilVisibleByElementsByTime(driver, xpath,time);
+        } catch (Exception e) {
+            LOGGER.info("no Elements visible ");
+        }
+    }
+
+    /**
+     * -----wait until Html DOM loading completes ---------
      */
     public static void waitUntilDomLoad(WebDriver driver) {
         LOGGER.info("Inside waitForElementLoading");
-        FluentWait fluentWait = readyStateWait(driver);
+        FluentWait fluentWait = new FluentWait(driver).withTimeout(Duration.ofSeconds(15)).pollingEvery(Duration.ofSeconds(1)).ignoring(WebDriverException.class);
         if (driver.getTitle().contains("/maintenix/")) {
             ExpectedCondition<Boolean> jQueryLoad;
             try {
@@ -1279,18 +1502,10 @@ public class SeleniumUtil {
         }
         LOGGER.info("Dom load completed");
     }
-    private static FluentWait readyStateWait(WebDriver driver) {
-        return new FluentWait(driver).withTimeout(Duration.ofSeconds(15)).pollingEvery(Duration.ofSeconds(1)).ignoring(WebDriverException.class);
-    }
 
     /**
-     * Select dropdown options based on the index value
-     *
-     * @param driver
-     * @param element
-     * @param index
+     * -----Select dropdown Option by index number By WebElement--------------------------------------------------------
      */
-
     public static String selectDropdownByIndexNumber(final WebDriver driver, WebElement element, int index) {
         String selctedValue = null;
         try {
@@ -1309,6 +1524,10 @@ public class SeleniumUtil {
         }
         return selctedValue;
     }
+
+    /**
+     * -----Select dropdown Option by index number By Xpath--------------------------------------------------------
+     */
 
     public static String selectDropdownByIndexNumber(final WebDriver driver, String xpath, int index) {
         String selctedValue = null;
@@ -1332,7 +1551,8 @@ public class SeleniumUtil {
 
     /**
      * ------------------------------------------------------------------------------------------------------------------
-     * Select dropdown options based on visible text
+     * Select dropdown options based on visible text and Option text by WebElement
+     * Return void
      */
 
     public static void selectDropdownByText(final WebDriver driver, WebElement element, String text, String... optionalText) {
@@ -1363,7 +1583,13 @@ public class SeleniumUtil {
         }
     }
 
-    public static String selectDropdownByValue(final WebDriver driver, WebElement element, String value) {
+    /**
+     * ------------------------------------------------------------------------------------------------------------------
+     * Select dropdown options based on visible text by WebElement
+     * Return Selected String
+     */
+
+    public static String selectDropdownByText(final WebDriver driver, WebElement element, String value) {
         String selctedValue = null;
         try {
             final Wait<WebDriver> wait =
@@ -1381,6 +1607,33 @@ public class SeleniumUtil {
         }
         return selctedValue;
     }
+
+    /**
+     * ------------------------------------------------------------------------------------------------------------------
+     * Select dropdown options based on visible text by Xpath
+     * Return void
+     */
+    public static void selectDropdownByValueReturnVoid(final WebDriver driver, WebElement element, String value) {
+        try {
+            final Wait<WebDriver> wait =
+                    new FluentWait<>(driver).pollingEvery(Duration.ofMillis(200)).withTimeout(Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS))
+                            .ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class);
+            wait.until(ExpectedConditions.visibilityOf(element));
+            highLighterMethod(driver, element);
+            Select selectElement = new Select(element);
+            selectElement.selectByVisibleText(value);
+        } catch (NoSuchElementException | StaleElementReferenceException
+                 | TimeoutException e) {
+            LOGGER.error(ERROR_MSG, e);
+            fail();
+        }
+    }
+
+    /**
+     * ------------------------------------------------------------------------------------------------------------------
+     * Select dropdown options based on visible text by Xpath
+     * Return Selected String
+     */
     public static String selectDropdownByValue(final WebDriver driver, String xpath, String value) {
         String selctedValue =null;
         try {
@@ -1394,13 +1647,18 @@ public class SeleniumUtil {
             selectElement.selectByVisibleText(value);
             selctedValue =selectElement.getFirstSelectedOption().getText();
         } catch (NoSuchElementException | StaleElementReferenceException
-                 | org.openqa.selenium.TimeoutException e) {
+                 | TimeoutException e) {
             LOGGER.error(ERROR_MSG, e);
             fail();
         }
         return selctedValue;
     }
 
+    /**
+     * ------------------------------------------------------------------------------------------------------------------
+     * Select dropdown options based on visible text by Xpath
+     * Return Selected String
+     */
     public static String selectDropdownByValueReturnOption(final WebDriver driver, String xpath, String value) {
         String selctedValue = null;
         try {
@@ -1420,6 +1678,12 @@ public class SeleniumUtil {
         }
         return selctedValue;
     }
+
+    /**
+     * ------------------------------------------------------------------------------------------------------------------
+     * Select dropdown options based on visible text by Xpath
+     * Return void
+     */
     public static void selectDropdownByValueReturnVoid(final WebDriver driver, String xpath, String value) {
         try {
             final Wait<WebDriver> wait =
@@ -1436,22 +1700,12 @@ public class SeleniumUtil {
             fail();
         }
     }
-    public static void selectDropdownByValueReturnVoid(final WebDriver driver, WebElement element, String value) {
-        try {
-            final Wait<WebDriver> wait =
-                    new FluentWait<>(driver).pollingEvery(Duration.ofMillis(200)).withTimeout(Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS))
-                            .ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class);
-            wait.until(ExpectedConditions.visibilityOf(element));
-            highLighterMethod(driver, element);
-            Select selectElement = new Select(element);
-            selectElement.selectByVisibleText(value);
-        } catch (NoSuchElementException | StaleElementReferenceException
-                | TimeoutException e) {
-            LOGGER.error(ERROR_MSG, e);
-            fail();
-        }
-    }
 
+    /**
+     * ------------------------------------------------------------------------------------------------------------------
+     * Select dropdown options matching with list of Values based on visible text by WebElement
+     * Return Selected String
+     */
     public static String selectDropdownByValueFromList(final WebDriver driver, WebElement element, List<String> values) {
         String selctedValue = null;
         try {
@@ -1464,6 +1718,7 @@ public class SeleniumUtil {
             for (String value : values) {
                 try {
                     selectElement.selectByVisibleText(value);
+                    break;
                 } catch (Exception e) {
                     LOGGER.info("failed in selecting the :" + value);
                     continue;
@@ -1479,12 +1734,12 @@ public class SeleniumUtil {
     }
 
     /**
-     * Select value from dropdown
+     * get the all the available options from Select dropdown by WebElement
      */
-    public static List<String> getAllOptions(WebDriver driver, WebElement dropdown) {
+    public static List<String> getAllOptions(WebDriver driver, WebElement element) {
         try {
-            Select options = new Select(dropdown);
-            highLighterMethod(driver, dropdown);
+            Select options = new Select(element);
+            highLighterMethod(driver, element);
             List<WebElement> values = options.getOptions();
             List<String> dropdownValue = new ArrayList<>();
             for (WebElement value : values) {
@@ -1492,14 +1747,14 @@ public class SeleniumUtil {
             }
             return dropdownValue;
         } catch (Exception e) {
-            LOGGER.error("Getting error while using Select tag", dropdown);
+            LOGGER.error("Getting error while using Select tag", element);
             fail();
             return null;
         }
     }
 
     /**
-     * Select value from dropdown byxpath
+     * get the all the available options from Select dropdown by Xpath
      */
     public static List<String> getAllOptions(WebDriver driver, String xpath) {
         WebElement dropdown = getElement(driver, xpath);
@@ -1520,30 +1775,28 @@ public class SeleniumUtil {
     }
 
     /**
-     * ---------------------------------------------------------------------------------------------------
-     * This Method is using action class and then will move to element and click on it
+     * get the first Selected option from Select dropdown by WebElement
      */
-
-    public static void moveToElementAndclick(final WebDriver driver, WebElement webElement) {
-        try {
-            final Wait<WebDriver> wait =
-                    new FluentWait<>(driver).pollingEvery(Duration.ofMillis(200)).withTimeout(Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS))
-                            .ignoring(NoSuchElementException.class).ignoring(StaleElementReferenceException.class);
-            wait.until(ExpectedConditions.elementToBeClickable(webElement));
-            Actions action = new Actions(driver);
-            action.moveToElement(webElement).click().build().perform();
-        } catch (TimeoutException e) {
-            LOGGER.error(ERROR_MSG, e);
-            fail();
-        }
+    public static String getSelectedValue(WebDriver driver, WebElement element) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(maxSyncTime));
+        wait.until(ExpectedConditions.elementToBeClickable(element));
+        Select select = new Select(element);
+        String text = getValueByElement(driver, select.getFirstSelectedOption());
+        return text;
     }
-
+    /**
+     * Set value to UI element using JSExecutor by WebElement
+     */
     public static void setValueToElementByJS(WebDriver driver, WebElement element, String value) {
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         waitUntilClickByElement(driver, element);
         executor.executeScript("arguments[0].scrollIntoView(true);", element);
         executor.executeScript("arguments[0].value='" + value + "';", element);
     }
+
+    /**
+     * Set value to UI element using JSExecutor by Xpath
+     */
 
     public static void setValueToElementByJS(WebDriver driver, String xpath, String value) {
         JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -1553,19 +1806,33 @@ public class SeleniumUtil {
         executor.executeScript("arguments[0].value='" + value + "';", element);
     }
 
+    /**
+     * getElement from xpath
+     */
     public static WebElement getElement(WebDriver driver, String xpath) {
         return waitUntilVisibleByXpath(driver, xpath);
     }
 
+    /**
+     * get list of Elements from Xpath
+     */
     public static List<WebElement> getElements(WebDriver driver, String xpath) {
         return waitUntilVisibleByElements(driver, xpath);
     }
+
+    /**
+     * get list of Elements from Xpath with given time delay
+     */
 
     public static List<WebElement> getElements(WebDriver driver, String xpath,int waitDelay) {
         List<WebElement> webElements = waitUntilVisibleByElementsByTime(driver, xpath, waitDelay);
         return webElements;
     }
 
+    /**
+     * Check for visibility of element by WebElement
+     * return Boolean
+     */
     public static boolean isElementVisible(final WebDriver driver, final WebElement webElement) {
         try {
             waitUntilVisibleByElement(driver, webElement);
@@ -1575,23 +1842,10 @@ public class SeleniumUtil {
         }
     }
 
-    public static boolean isElementVisible(final WebDriver driver, String xpath) {
-        try {
-            waitUntilVisibleByXpath(driver, xpath);
-            return true;
-        } catch (Exception ele) {
-            return false;
-        }
-    }
-
-    public static boolean isElementVisible(final WebDriver driver, String xpath, int duration) {
-        try {
-            waitUntilVisibleByXpathByTIme(driver, xpath,duration);
-            return true;
-        } catch (Exception ele) {
-            return false;
-        }
-    }
+    /**
+     * Check for visibility of element by WebElement with given time delay
+     * return Boolean
+     */
 
     public static boolean isElementVisible(final WebDriver driver, final WebElement webElement, int duration) {
         try {
@@ -1602,155 +1856,37 @@ public class SeleniumUtil {
         }
     }
 
-    public static List<String> getAllOptionsNonSelect(WebDriver driver, WebElement dropdown, List<WebElement> elements) {
-        List<String> dropdownValue = new ArrayList<>();
+    /**
+     * Check for visibility of element by Xpath
+     * return Boolean
+     */
+    public static boolean isElementVisible(final WebDriver driver, String xpath) {
         try {
-            clickElementbyWebElement(driver, dropdown);
-            for (WebElement value : elements) {
-                waitByTime(250);
-                dropdownValue.add(getValueByElement(driver, value));
-            }
-            return dropdownValue;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return dropdownValue;
+            waitUntilVisibleByXpath(driver, xpath);
+            return true;
+        } catch (Exception ele) {
+            return false;
         }
     }
 
-    public static List<String> getValuesFromList(WebDriver driver, List<WebElement> elements) {
-        waitUntilVisibleByElements(driver, elements);
-        List<String> dropdownValue = new ArrayList<>();
+    /**
+     * Check for visibility of element by Xpath with given time delay
+     * return Boolean
+     */
+
+    public static boolean isElementVisible(final WebDriver driver, String xpath, int duration) {
         try {
-            for (WebElement value : elements) {
-                waitByTime(100);
-                highLighterMethod(driver, value);
-                dropdownValue.add(getValueByElement(driver, value));
-            }
-            return dropdownValue;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return dropdownValue;
+            waitUntilVisibleByXpathByTIme(driver, xpath,duration);
+            return true;
+        } catch (Exception ele) {
+            return false;
         }
     }
 
-    public static List<String> getValuesFromList(WebDriver driver, String xpath) {
-        waitUntilVisibleByXpath(driver, xpath);
-        List<WebElement> elements = driver.findElements(By.xpath(xpath));
-        List<String> dropdownValue = new ArrayList<>();
-        try {
-            for (WebElement value : elements) {
-                waitByTime(100);
-                highLighterMethod(driver, value);
-                dropdownValue.add(getValueByElement(driver, value));
-            }
-            return dropdownValue;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return dropdownValue;
-        }
-    }
-    public static String replaceCharOccurrence(String text, String replaceFrom, String replaceTo, int occurrenceIndex) {
-        StringBuffer sb = new StringBuffer();
-        Pattern p = Pattern.compile(replaceFrom);
-        Matcher m = p.matcher(text);
-        int count = 0;
-        while (m.find()) {
-            if (count++ == occurrenceIndex - 1) {
-                m.appendReplacement(sb, replaceTo);
-            }
-        }
-        m.appendTail(sb);
-        return sb.toString();
-    }
-
-    public static List<String> getValuesFromListWithCount(WebDriver driver, List<WebElement> elements, int noElements) {
-        waitUntilVisibleByElements(driver, elements);
-        List<String> dropdownValue = new ArrayList<>();
-        try {
-            for (int j = 0; j < noElements; j++) {
-                waitByTime(250);
-                dropdownValue.add(getValueByElement(driver, elements.get(j)));
-            }
-            return dropdownValue;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return dropdownValue;
-        }
-    }
-
-    public static List<String> getValuesFromListWithCount(WebDriver driver, String xpath, int noElements) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
-        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(xpath)));
-        List<WebElement> elements =getElements(driver,xpath);
-        List<String> dropdownValue = new ArrayList<>();
-        try {
-            for (int j = 0; j < noElements; j++) {
-                waitByTime(250);
-                dropdownValue.add(getValueByElement(driver, elements.get(j)));
-            }
-            return dropdownValue;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return dropdownValue;
-        }
-    }
-
-    public static void shiftFocus(WebDriver driver) {
-        Actions action = new Actions(driver);
-        action.sendKeys(Keys.TAB).perform();
-    }
-    public static void waitTillLoadingCompletes(WebElement element) {
-        try {
-            long start = System.currentTimeMillis();
-            int elapsedTime = 0;
-           waitByTime(500);
-            while (element.isDisplayed()) {
-                if (elapsedTime > maxSyncTime) {
-                    break;
-                }
-                waitByTime(500);
-                elapsedTime = Math.round((System.currentTimeMillis() - start) / 1000F);
-            }
-        } catch (Exception e) {
-            if ((e.toString().contains("NoSuchElementException") || e.getMessage().contains("NoStale"))) {
-            } else {
-
-            }
-        }
-    }
-
-    public static void waitForElementsDisplayed(WebDriver driver, List<WebElement> elements) {
-        try {
-            waitUntilVisibleByElements(driver, elements);
-        } catch (Exception e) {
-            LOGGER.info("no Elements visible ");
-        }
-    }
-
-    public static void waitForElementsDisplayed(WebDriver driver, String xpath) {
-        try {
-            waitUntilVisibleByElements(driver, xpath);
-        } catch (Exception e) {
-            LOGGER.info("no Elements visible ");
-        }
-    }
-
-    public static void waitForElementsDisplayed(WebDriver driver, String xpath, int time) {
-        try {
-            waitUntilVisibleByElementsByTime(driver, xpath,time);
-        } catch (Exception e) {
-            LOGGER.info("no Elements visible ");
-        }
-    }
-
-    public static void waitForElementsDisplayed(WebDriver driver, List<WebElement> elements, int time) {
-         try {
-             waitUntilVisibleByElementsByTime(driver, elements,time);
-        } catch (Exception e) {
-            LOGGER.info("no Elements visible ");
-        }
-    }
-
+    /**
+     * Checks whether element is clickable or not by Element -----------------------------------------------------------
+     * return Boolean
+     */
     public static Boolean isElementClickable(WebDriver driver, WebElement element) {
         Boolean flag = false;
         waitUntilVisibleByElement(driver, element);
@@ -1766,6 +1902,11 @@ public class SeleniumUtil {
         }
         return flag;
     }
+
+    /**
+     * Checks whether element is clickable or not by Xpath -----------------------------------------------------------
+     * return Boolean
+     */
 
     public static Boolean isElementClickable(WebDriver driver, String xpath) {
         Boolean flag = false;
@@ -1785,6 +1926,10 @@ public class SeleniumUtil {
         return flag;
     }
 
+    /**
+     * Checks whether element is clickable or not by Xpath with given delay-----------------------------------------------------------
+     * return Boolean
+     */
     public static Boolean isElementClickable(WebDriver driver, String xpath, int time) {
         Boolean flag = false;
         WebElement element = null;
@@ -1803,6 +1948,157 @@ public class SeleniumUtil {
         return flag;
     }
 
+    /**
+     * get All Options from a NoN-Select Dropdown by WebElement
+     *
+     */
+    public static List<String> getAllOptionsNonSelect(WebDriver driver, WebElement dropdown, List<WebElement> elements) {
+        List<String> dropdownValue = new ArrayList<>();
+        try {
+            clickElementbyWebElement(driver, dropdown);
+            for (WebElement value : elements) {
+                waitByTime(250);
+                dropdownValue.add(getValueByElement(driver, value));
+            }
+            return dropdownValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dropdownValue;
+        }
+    }
+
+    /**
+     * get list of Values from list of Elements using WebElements
+     *
+     */
+    public static List<String> getValuesFromList(WebDriver driver, List<WebElement> elements) {
+        waitUntilVisibleByElements(driver, elements);
+        List<String> dropdownValue = new ArrayList<>();
+        try {
+            for (WebElement value : elements) {
+                waitByTime(100);
+                highLighterMethod(driver, value);
+                dropdownValue.add(getValueByElement(driver, value));
+            }
+            return dropdownValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dropdownValue;
+        }
+    }
+
+    /**
+     * get list of Values from list of Elements using Xpath
+     *
+     */
+    public static List<String> getValuesFromList(WebDriver driver, String xpath) {
+        waitUntilVisibleByXpath(driver, xpath);
+        List<WebElement> elements = driver.findElements(By.xpath(xpath));
+        List<String> dropdownValue = new ArrayList<>();
+        try {
+            for (WebElement value : elements) {
+                waitByTime(100);
+                highLighterMethod(driver, value);
+                dropdownValue.add(getValueByElement(driver, value));
+            }
+            return dropdownValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dropdownValue;
+        }
+    }
+
+    /**
+     * get list of Values from list of Elements using WebElements by removing additional spaces or next line
+     *
+     */
+    public static List<String> getElementsText(WebDriver driver, List<WebElement> elements) {
+        List<String> elementText = new ArrayList<>();
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(maxSyncTime));
+        wait.until(ExpectedConditions.visibilityOfAllElements(elements));
+        for (WebElement ele : elements) {
+            SeleniumUtil.scrollToWebElement(driver, ele);
+            elementText.add(ele.getText().replaceAll("\\R", " ").trim());
+        }
+        return elementText;
+    }
+
+    /**
+     * get list of required Values by given Count from list of Elements using WebElements
+     *
+     */
+    public static List<String> getValuesFromListWithCount(WebDriver driver, List<WebElement> elements, int noElements) {
+        waitUntilVisibleByElements(driver, elements);
+        List<String> dropdownValue = new ArrayList<>();
+        try {
+            for (int j = 0; j < noElements; j++) {
+                waitByTime(250);
+                dropdownValue.add(getValueByElement(driver, elements.get(j)));
+            }
+            return dropdownValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dropdownValue;
+        }
+    }
+
+    /**
+     * get list of required Values by given Count from list of Elements using Xpath
+     *
+     */
+    public static List<String> getValuesFromListWithCount(WebDriver driver, String xpath, int noElements) {
+        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(DRIVER_WAIT_TIME_IN_SECS));
+        wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(xpath)));
+        List<WebElement> elements =getElements(driver,xpath);
+        List<String> dropdownValue = new ArrayList<>();
+        try {
+            for (int j = 0; j < noElements; j++) {
+                waitByTime(250);
+                dropdownValue.add(getValueByElement(driver, elements.get(j)));
+            }
+            return dropdownValue;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return dropdownValue;
+        }
+    }
+
+    /**
+     * Replace the character occurrence based on given index
+     *
+     */
+
+    public static String replaceCharOccurrence(String text, String replaceFrom, String replaceTo, int occurrenceIndex) {
+        StringBuffer sb = new StringBuffer();
+        Pattern p = Pattern.compile(replaceFrom);
+        Matcher m = p.matcher(text);
+        int count = 0;
+        while (m.find()) {
+            if (count++ == occurrenceIndex - 1) {
+                m.appendReplacement(sb, replaceTo);
+            }
+        }
+        m.appendTail(sb);
+        return sb.toString();
+    }
+
+    /**
+     * Move Cursor position after selecting Multi Value dropdown
+     *
+     */
+    public static void shiftFocus(WebDriver driver) {
+        Actions action = new Actions(driver);
+        action.sendKeys(Keys.TAB).perform();
+    }
+
+    /**
+     * Move Cursor position after selecting Multi Value dropdown by clicking on screen based on location---------------
+     *
+     */
+    public void changefocus(final WebDriver driver) {
+        Actions actions = new Actions(driver);
+        actions.moveByOffset(20, 8).click().build().perform();
+    }
 
     /**
      * select any random element from list of elements
@@ -1870,7 +2166,7 @@ public class SeleniumUtil {
     }
 
     /**
-     * perform click on element using java script executor
+     * perform click on element using java script executor by WebElement
      */
     public static void clickElementByJS(final WebDriver driver, final WebElement elementID) {
         final JavascriptExecutor executor = (JavascriptExecutor) driver;
@@ -1883,6 +2179,9 @@ public class SeleniumUtil {
         }
     }
 
+    /**
+     * perform click on element using java script executor by Xpath
+     */
     public static void clickElementByJS(final WebDriver driver, String xpath) {
         final JavascriptExecutor executor = (JavascriptExecutor) driver;
         WebElement elementID = null;
@@ -1911,7 +2210,7 @@ public class SeleniumUtil {
     }
 
      /**
-     * -----Double click using Actions class  ---------
+     * -----Double click using Actions class with wait  ---------
      */
     public static void doubleClick(final WebDriver driver, WebElement element) {
         Actions actions = new Actions(driver);
@@ -1932,7 +2231,33 @@ public class SeleniumUtil {
             actions.doubleClick(element).build().perform();
         }
     }
+
+    /**
+     * -----Right click using Actions class with wait  --------------------------------------
+     */
     public static void rightClick(WebDriver driver, WebElement element) {
+        Actions actions = new Actions(driver);
+        waitUntilVisibleByElement(driver, element);
+        waitByTime(1000);
+        if (!isElementVisible(driver, element)) {
+            scrollToWebElement(driver, element);
+        }
+        waitUntilVisibleByElement(driver, element);
+        if (isElementVisible(driver, element)) {
+            actions.moveToElement(element).build();
+            actions.contextClick(element).build().perform();
+        } else {
+            waitUntilVisibleByElement(driver, element);
+            actions.moveToElement(element).build();
+            actions.contextClick(element).build().perform();
+        }
+    }
+
+    /**
+     * -----Right click using Actions class and click on given element with wait  --------------------------------------
+     */
+
+    public static void rightClickAndElementSelect(WebDriver driver, WebElement element, WebElement elementSel) {
         Actions actions = new Actions(driver);
         waitUntilVisibleByElement(driver, element);
         waitByTime(1000);
@@ -1946,9 +2271,13 @@ public class SeleniumUtil {
         } else {
             waitUntilVisibleByElement(driver, element);
             actions.moveToElement(element).build();
-            actions.contextClick(element).build().perform();
+            actions.contextClick(element).pause(1000).click(elementSel).build().perform();
         }
     }
+
+    /**
+     * -----Single click using Actions class with wait  ---------
+     */
 
     public static void singleClick(WebDriver driver, WebElement element) {
         Actions actions = new Actions(driver);
@@ -1968,52 +2297,14 @@ public class SeleniumUtil {
         }
     }
 
-    public static String getSelectedValue(WebDriver driver, WebElement element) {
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(maxSyncTime));
-        wait.until(ExpectedConditions.elementToBeClickable(element));
-        Select select = new Select(element);
-        String text = getValueByElement(driver, select.getFirstSelectedOption());
-        return text;
-    }
-
-    public void changefocus(final WebDriver driver) {
-        Actions actions = new Actions(driver);
-        actions.moveByOffset(20, 8).click().build().perform();
-    }
+    /**
+     * -----Switch frame By WebElement  ---------
+     */
     public static void switchFrame(WebDriver driver, WebElement element) {
         final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(maxSyncTime));
         wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(element));
         driver.switchTo().frame(element);
 
     }
-    public static void rightClickAndElementSelect(WebDriver driver, WebElement element, WebElement elementSel) {
-        Actions actions = new Actions(driver);
-        waitUntilVisibleByElement(driver, element);
-        waitByTime(1000);
-        if (!isElementVisible(driver, element)) {
-            scrollToWebElement(driver, element);
-        }
-        waitUntilVisibleByElement(driver, element);
-        if (isElementVisible(driver, element)) {
-            actions.moveToElement(element).build();
-            actions.click(element).build().perform();
-        } else {
-            waitUntilVisibleByElement(driver, element);
-            actions.moveToElement(element).build();
-            actions.contextClick(element).pause(1000).click(elementSel).build().perform();
-        }
-    }
-
-    public static List<String> getElementsText(WebDriver driver, List<WebElement> elements) {
-        List<String> elementText = new ArrayList<>();
-        final WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(maxSyncTime));
-        wait.until(ExpectedConditions.visibilityOfAllElements(elements));
-        for (WebElement ele : elements) {
-            SeleniumUtil.scrollToWebElement(driver, ele);
-            elementText.add(ele.getText().replaceAll("\\R", " ").trim());
-        }
-        return elementText;
-    }
-
 
 }

@@ -1,23 +1,21 @@
 package com.csx.stepdefinitions;
 
-import com.csx.springConfig.annotation.LazyAutowired;
 import com.csx.test.util.ReportLogUtils;
+import com.csx.utils.AppConfig;
+import com.csx.utils.AppConfigHolder;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Then;
-import io.cucumber.spring.CucumberContextConfiguration;
 import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
+import jakarta.inject.Inject;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,23 +23,18 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Properties;
 
-@CucumberContextConfiguration
-@SpringBootTest
 public class CsxDemoStepDefinitions {
   private static final Logger LOGGER = LoggerFactory.getLogger(CsxDemoStepDefinitions.class);
-  @LazyAutowired
+  @Inject
   ReportLogUtils reportLogUtils;
+  String auth_url= AppConfigHolder.getInstance().auth_qa_url();
 
-  @Value("${auth_url}")
-  String auth_url;
-
-  @Value("${hierarchy_api_endpoint}")
-  String hierarchy_api_endpoint;
+  String hierarchy_api_endpoint=AppConfigHolder.getInstance().hierarchy_qa_api_endpoint();
 
   private static Properties properties = null;
 
   Scenario scenario;
-  @Autowired
+  @Inject
   ScenarioContext scenarioContext;
 
   @Before

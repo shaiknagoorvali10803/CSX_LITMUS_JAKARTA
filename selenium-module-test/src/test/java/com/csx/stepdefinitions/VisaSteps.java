@@ -1,62 +1,53 @@
-package com.csx.stepdefinitions;
+package com.csx.stepDefinitions;
+
 
 import com.csx.page.actions.GooglePageActions;
 import com.csx.page.actions.VisaPageActions;
-import com.csx.springConfig.annotation.LazyAutowired;
 import com.csx.test.util.ScreenshotUtils;
-import io.cucumber.java.Before;
+import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import jakarta.annotation.PostConstruct;
-import org.openqa.selenium.WebDriver;
+import jakarta.inject.Inject;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.StringUtils;
-import org.testng.Assert;
 
 import java.time.LocalDate;
 
 public class VisaSteps {
-    @Autowired
-    protected WebDriver driver;
 
-    @Autowired
-    protected WebDriverWait wait;
+    @Inject
+    WebDriverProvider driverProvider;
 
-    @LazyAutowired
-    private VisaPageActions registrationPage;
+    @Inject
+    VisaPageActions registrationPage;
 
-    @Autowired
-    ScreenshotUtils screenshotUtils;
-    @LazyAutowired
-    private GooglePageActions googlePage;
+    @Inject
+    GooglePageActions googlePage;
+    @Inject
+    ScenarioContext scenarioContext;
 
     Scenario scenario;
+    @Inject
+    ScreenshotUtils screenshotUtils;
 
-    @LazyAutowired
-    ScenarioContext scenarioContext;
 
     @PostConstruct
     private void init() {
-        PageFactory.initElements(this.driver, this);
-    }
-
-    @Before
-    public void settingScenario(Scenario scenario) {
-        this.scenario=scenario;
-        scenarioContext.setScenario(scenario);
-        System.out.println("scenarion object in Visa page By : ==>"+ scenario );
+        PageFactory.initElements(this.driverProvider.getInstance(), this);
+        scenario = scenarioContext.getScenario();
     }
 
     @Given("I am on VISA registration form")
     public void launchSite() throws InterruptedException {
-        this.driver.navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        this.driverProvider.getInstance().navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
         screenshotUtils.insertScreenshot("screenshot");
+        //Allure.addAttachment("Screenshot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
     }
 
     @When("I select my from country {string} and to country {string}")
@@ -86,16 +77,13 @@ public class VisaSteps {
 
     @And("I submit the form")
     public void submit() throws InterruptedException {
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         screenshotUtils.insertScreenshot("screenshot");
-        //Allure.addAttachment("Screenshot", new ByteArrayInputStream(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
         this.registrationPage.submit();
     }
 
     @Then("I should see get the confirmation number")
     public void verifyConfirmationNumber() throws InterruptedException {
         boolean isEmpty = StringUtils.isEmpty(this.registrationPage.getConfirmationNumber().trim());
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         screenshotUtils.insertScreenshot("screenshot");
         Assert.assertFalse(isEmpty);
         Thread.sleep(2000);

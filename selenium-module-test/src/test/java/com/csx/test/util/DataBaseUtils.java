@@ -13,8 +13,8 @@ public class DataBaseUtils {
     public static final String ERROR_MSG = "Some error has occurred while performing operation::{}";
 
     /**
-     * ------------------------------- Oracle Database connection and retrieve specific column data
-     * --------------------------------------
+     * ------Oracle Database establishing connection  --------------------------------------------
+     *
      */
 
     public static void oracleConnectionExecuteSql(String dbUrl, String username, String password, String sql) {
@@ -29,6 +29,10 @@ public class DataBaseUtils {
         }
     }
 
+    /**
+     * ------fetching the values from Oracle DB --------------------------------------------
+     * return List of Maps
+     */
     public static List<Map<String, String>> oracleConnectionRowRetrieve(String dbUrl, String username, String password, String sql) {
         try (Connection dbConnection = DriverManager.getConnection(dbUrl, username, password);
              Statement stmt = dbConnection.createStatement();
@@ -55,6 +59,11 @@ public class DataBaseUtils {
         }
         return Collections.emptyList();
     }
+
+    /**
+     * ------fetching the values from Oracle DB --------------------------------------------
+     * return String Array
+     */
 
     public static String[][] oracleConnectionDataRetrieve(String dbUrl, String username, String password, String sql) {
         try (Connection dbConnection = DriverManager.getConnection(dbUrl, username, password);

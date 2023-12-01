@@ -5,37 +5,32 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.csx.springConfig.annotation.Page;
 import io.cucumber.java.Scenario;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.FileCopyUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@Page
+@Singleton
 public class ScreenshotUtils {
     public static Logger logger = LoggerFactory.getLogger(ScreenshotUtils.class);
-    @Autowired
-    WebDriver driver;
 
-    @Value("${screenshot.path}")
-    private Path path;
+    @Inject
+    private WebDriverProvider driverProvider;
 
     public void insertScreenshot1(Scenario scenario, String screenshotTitle){
-        scenario.attach(((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES), "image/png", "screenShot");
+        scenario.attach(((TakesScreenshot) driverProvider.getInstance()).getScreenshotAs(OutputType.BYTES), "image/png", screenshotTitle);
      }
     public void insertScreenshot(String screenshotTitle){
         ExtentCucumberAdapter.getCurrentStep().log(Status.PASS, MarkupHelper.createLabel(screenshotTitle, ExtentColor.GREEN), MediaEntityBuilder.createScreenCaptureFromBase64String(getScreenshotBase64()).build());
@@ -53,18 +48,11 @@ public class ScreenshotUtils {
         ExtentCucumberAdapter.getCurrentStep().log(Status.INFO,MarkupHelper.createJsonCodeBlock(object));
     }
 
-    public String takeScreenShot() throws IOException {
-        String dateName = new SimpleDateFormat("yyyyMMddhhmmssSSS").format(new Date());
-        File sourceFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        FileCopyUtils.copy(sourceFile, this.path.resolve(dateName + ".png").toFile());
-        return sourceFile.toString();
-    }
-
     public String browser_TakeScreenShot() {
         String destination = null;
         String imgPath = null;
         String dateName = new SimpleDateFormat("yyyyMMddhhmmssSSS").format(new Date());
-        byte[] imag=((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
+        byte[] imag=((TakesScreenshot) driverProvider.getInstance()).getScreenshotAs(OutputType.BYTES);
         ByteArrayInputStream bais = new ByteArrayInputStream(imag);
         BufferedImage image = null;
         try {
@@ -85,7 +73,7 @@ public class ScreenshotUtils {
     }
 
     public String getScreenshotBase64(){
-        String screenshot=((TakesScreenshot) driver).getScreenshotAs(OutputType.BASE64);
+        String screenshot=((TakesScreenshot) driverProvider.getInstance()).getScreenshotAs(OutputType.BASE64);
         return screenshot;
     }
 }

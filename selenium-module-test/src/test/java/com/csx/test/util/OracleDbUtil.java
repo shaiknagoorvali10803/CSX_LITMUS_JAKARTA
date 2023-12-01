@@ -15,8 +15,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class OracleDbUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OracleDbUtil.class);
 	public static final String ERROR_MSG = "Some error has occurred while performing operation::{}";
-	
-	//To execute SQL without retrieving any data. Useful for Insert, Update etc SQL
+
+	/**
+	 * ------To execute SQL without retrieving any data. Useful for Insert, Update etc SQL---------------------
+	 *
+	 */
 	public static void oracleConnectionExecuteSql(String dbUrl, String username, String password, String sql) {
 		try {
 			Connection dbConnection = DriverManager.getConnection(dbUrl, username, password);
@@ -31,8 +34,11 @@ public class OracleDbUtil {
 			fail();
 		}
 	}
-	
-	//Connect to Oracle database and retrieve data into hashmap. Key will be column header and value list will be values
+
+	/**
+	 * ------fetching the values from Oracle DB --------------------------------------------
+	 * return List of Map
+	 */
 	public static List<Map<String, String>> oracleConnectionRowRetrieve(String dbUrl, String username, String password,
                                                                         String sql) {
 		try (Connection dbConnection = DriverManager.getConnection(dbUrl, username, password);
@@ -68,8 +74,11 @@ public class OracleDbUtil {
 		}
 		return Collections.emptyList();
 	}
-	
-	//Connect to Oracle database and retrieve data in two dimensional array
+
+	/**
+	 * ------fetching the values from Oracle DB --------------------------------------------
+	 * return String Array
+	 */
 	public static String[][] oracleConnectionDataRetrieve(String dbUrl, String username, String password, String sql) {
 
 		try (Connection dbConnection = DriverManager.getConnection(dbUrl, username, password);

@@ -22,7 +22,9 @@ public class FileHandlingUtil {
 
 	public static final String downloadPath = System.getProperty("user.dir");
 
-	//File download confirmation
+	/**
+	 * -----Check file with given partial name is Downloaded?  ---------
+	 */
 	public static boolean isFileDownloaded(String partialFileName) {
 		File dir = new File(downloadPath);
 		File[] files = dir.listFiles();
@@ -34,8 +36,12 @@ public class FileHandlingUtil {
 		}
 		return flag;
 	}
+
+	/**
+	 * -----Check file with given partial name and format is available ?  ---------
+	 */
 	public static String checkWithPartialFileNameInFolder(String partialFileName, String format) {
-		String folderName = System.getProperty("user.dir") + File.separator; // Give your folderName
+		String folderName = downloadPath + File.separator; // Give your folderName
 		File[] listFiles = new File(folderName).listFiles();
 		String file = null;
 		for (int i = 0; i < listFiles.length; i++) {
@@ -50,8 +56,10 @@ public class FileHandlingUtil {
 		}
 		return file;
 	}
-	
-	//Get Newest File
+
+	/**
+	 * -----get the latest filename with given extention  ---------
+	 */
 	public static String getTheNewestFile(String filePath, String ext) {
 	    File dir = new File(filePath);
 	    FileFilter fileFilter = new WildcardFileFilter("*." + ext);
@@ -67,17 +75,22 @@ public class FileHandlingUtil {
 	    return name;
 	}
 
-//Delete file with some partial filename match
-
+	/**
+	 * -----delete the filename with given partialName  ---------
+	 */
 	public static void deleteExistingFile(String partialFileName) {
 		File dir = new File(downloadPath);
 		File[] files = dir.listFiles();
-		for (int i = 1; i < files.length; i++) {
+		for (int i = 0; i < files.length; i++) {
 			if (files[i].getName().contains(partialFileName)) {
 				files[i].delete();
 			}
 		}
 	}
+
+	/**
+	 * -----delete the filename with given partialName and extention ---------
+	 */
 	public static void deleteExistingFile(String path, String partialFileName, String extension) {
 		File dir = new File(path);
 		FileFilter fileFilter = new WildcardFileFilter("*." + extension);
@@ -94,25 +107,18 @@ public class FileHandlingUtil {
 
 	}
 
-// Get actual filename with partial file name match
+	/**
+	 * -----get the latest filename ---------
+	 */
 	public static String getFilename(String partialFileName) {
 		File dir = new File(downloadPath);
 		File[] files = dir.listFiles();
 		String reportFileName = "";
-		for (int i = 1; i < files.length; i++) {
+		for (int i = 0; i < files.length; i++) {
 			if (files[i].getName().contains(partialFileName)) {
 				reportFileName = files[i].getName();
 			}
 		}
 		return reportFileName;
 	}
-
-//Create new tab and switch to new tab
-	public static void switchNewTab(WebDriver driver) {
-		((JavascriptExecutor) driver).executeScript("window.open()");
-		List<String> tabs = new ArrayList<>(driver.getWindowHandles());
-		driver.switchTo().window(tabs.get(1));
-	}
-
-
 }

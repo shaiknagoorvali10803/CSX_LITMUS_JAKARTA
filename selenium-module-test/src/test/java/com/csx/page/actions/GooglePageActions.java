@@ -1,61 +1,47 @@
 package com.csx.page.actions;
 
-import com.csx.page.objects.GooglePageObjects;
-import com.csx.springConfig.annotation.LazyAutowired;
-import com.csx.springConfig.annotation.Page;
-import com.csx.stepdefinitions.ScenarioContext;
+import com.csx.stepDefinitions.ScenarioContext;
 import com.csx.test.util.ScreenshotUtils;
+import com.csx.utils.AppConfigHolder;
+import com.csx.test.util.WebDriverProvider;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import jakarta.annotation.PostConstruct;
-import org.apache.commons.lang3.BooleanUtils;
-import org.openqa.selenium.By;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.time.Duration;
 
-@Page
+@Singleton
 public class GooglePageActions {
-    @Autowired
-    WebDriver driver;
-    @Autowired
-    WebDriverWait wait;
-    @LazyAutowired
+    @Inject
+    WebDriverProvider driverProvider;
+    @Inject
     ScreenshotUtils screenshotUtils;
-    @Autowired
-    ScenarioContext scenarioContext;
-    @LazyAutowired
+    @Inject
     GooglePageObjects pageObjects;
 
-    @Value("${application.url}")
-    private String url;
-
-    @Value("${headless}")
-    private String headless;
+    WebDriverWait wait;
+    String googleurl = AppConfigHolder.getInstance().googleurl();
 
     @PostConstruct
     private void init() {
-        PageFactory.initElements(this.driver, this.pageObjects);
-     }
-    public void goTo() throws InterruptedException {
-        if (BooleanUtils.toBoolean(headless)) {
-            driver.get("https://chromedriver.storage.googleapis.com/index.html?path=79.0.3945.36/");
-            Thread.sleep(2000);
-            WebElement btnDownload = driver.findElement(By.xpath(".//a[text()='chromedriver_win32.zip']"));
-            btnDownload.click();
-            Thread.sleep(5000);
-        }
-        this.driver.navigate().to(url);
+        PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
+        wait = new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
     }
-    public void search(final String keyword){
+
+    public void goTo() throws InterruptedException {
+        driverProvider.getInstance().get(googleurl);
+    }
+
+    public void search(final String keyword) {
         pageObjects.searchBox.sendKeys(keyword);
-        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
+        screenshotUtils.insertScreenshot("screenshot");
         pageObjects.searchBox.sendKeys(Keys.TAB);
         pageObjects.searchBtns
                 .stream()
@@ -63,12 +49,11 @@ public class GooglePageActions {
                 .findFirst()
                 .ifPresent(WebElement::click);
     }
-    public int getCount(){
 
+    public int getCount() {
         return pageObjects.results.size();
-
-
     }
+
     public boolean isAt() {
         return this.wait.until((d) -> pageObjects.searchBox.isDisplayed());
     }
