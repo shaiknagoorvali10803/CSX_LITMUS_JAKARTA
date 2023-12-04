@@ -5,8 +5,11 @@ package com.csx.stepDefinitions;
 import com.csx.page.actions.HRMDashboardPageActions;
 import com.csx.page.actions.HRMLoginPageActions;
 import com.csx.test.util.WebDriverProvider;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Then;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 
@@ -19,6 +22,15 @@ public class DashboardPageStepDefinitions {
   HRMLoginPageActions login;
   @Inject
   HRMDashboardPageActions dashboard;
+
+    Scenario scenario;
+    @Inject
+    ScenarioContext scenarioContext;
+
+    @PostConstruct
+    public void settingScenario() {
+        scenario=scenarioContext.getScenario();
+    }
 	  
   @Then("i will veryfy the Dashboard content Apple leave")
   public void user_should_be_able_verify_applyleave() throws InterruptedException {

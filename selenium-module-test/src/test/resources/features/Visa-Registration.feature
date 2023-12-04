@@ -1,4 +1,4 @@
-@chrome
+@Chrome
 Feature: User visa registration feature
   Background:
     When I am Google Page

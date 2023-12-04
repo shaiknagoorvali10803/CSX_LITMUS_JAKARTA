@@ -2,6 +2,8 @@ package com.csx.stepDefinitions;
 
 import com.csx.page.actions.HomePageActions;
 import com.csx.test.util.WebDriverProvider;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 
@@ -20,9 +22,13 @@ public class HomeSteps {
 
     protected WebDriverWait wait;
 
+    Scenario scenario;
+    @Inject
+    ScenarioContext scenarioContext;
+
     @PostConstruct
-    private void init(){
-        PageFactory.initElements(this.driverProvider.getInstance(), this);
+    public void settingScenario() {
+        scenario=scenarioContext.getScenario();
     }
 
     @Given("I am Google Page")

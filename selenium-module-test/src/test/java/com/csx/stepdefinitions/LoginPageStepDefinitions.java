@@ -3,9 +3,12 @@ package com.csx.stepDefinitions;
 
 import com.csx.page.actions.HRMLoginPageActions;
 import com.csx.test.util.WebDriverProvider;
+import io.cucumber.java.Before;
+import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 
 public class LoginPageStepDefinitions {
@@ -15,6 +18,15 @@ public class LoginPageStepDefinitions {
 
   @Inject
   HRMLoginPageActions login;
+
+    Scenario scenario;
+    @Inject
+    ScenarioContext scenarioContext;
+
+    @PostConstruct
+    public void settingScenario() {
+        scenario=scenarioContext.getScenario();
+    }
 	
   @Given("I have browser opened and url is navigated")
   public void i_have_browser_opened_and_url_is_navigated() {

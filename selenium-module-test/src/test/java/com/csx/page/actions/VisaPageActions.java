@@ -4,6 +4,7 @@ import com.csx.stepDefinitions.ScenarioContext;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.SeleniumUtil;
 import com.csx.test.util.WebDriverProvider;
+import io.cucumber.java.Scenario;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -28,10 +29,15 @@ public class VisaPageActions {
 
     WebDriverWait wait;
 
+    @Inject
+    ScenarioContext scenarioContext;
+    Scenario scenario;
+
     @PostConstruct
-    private void init() {
+    private void init(){
         PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
-        wait = new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+        wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+        scenario=scenarioContext.getScenario();
     }
 
     public void setNames(String firstName, String lastName) {
@@ -49,6 +55,7 @@ public class VisaPageActions {
         new Select(pageObjects.day).selectByVisibleText(String.valueOf(localDate.getDayOfMonth()));
         new Select(pageObjects.month).selectByValue(localDate.getMonth().toString());
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
     }
 
     public void setContactDetails(String email, String phone) {

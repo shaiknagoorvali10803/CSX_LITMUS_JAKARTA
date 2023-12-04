@@ -34,7 +34,6 @@ public class GoogleSteps {
 
     @PostConstruct
     private void init() {
-        PageFactory.initElements(this.driverProvider.getInstance(), this.googlePage);
         scenario = scenarioContext.getScenario();
     }
 
@@ -53,6 +52,7 @@ public class GoogleSteps {
         Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(4));
         Assertions.assertTrue(this.googlePage.isAt());
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
 
     }
 
@@ -61,10 +61,12 @@ public class GoogleSteps {
         Assertions.assertTrue(this.googlePage.getCount() >= count);
         SeleniumUtil.clickElementByJS(driverProvider.getInstance(), "//a[normalize-space()='Images']");
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         Thread.sleep(3000);
         System.out.println("Current Thread Number " + Thread.currentThread().getThreadGroup() + "thread number" + Thread.currentThread().getId());
         driverProvider.getInstance().findElement(By.xpath("//a[normalize-space()='Videos']")).click();
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         Thread.sleep(3000);
     }
 }

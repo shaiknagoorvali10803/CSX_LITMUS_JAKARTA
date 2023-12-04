@@ -4,6 +4,7 @@ import com.csx.stepDefinitions.ScenarioContext;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.Scenario;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -24,9 +25,15 @@ public class HRMAdminPageActions {
     @Inject
     ScreenshotUtils screenshotUtils;
 
-    private void setup() {
-        PageFactory.initElements(driverProvider.getInstance(), pageObjects);
-        driverWait = new WebDriverWait(driverProvider.getInstance(),Duration.ofSeconds(60));
+    @Inject
+    ScenarioContext scenarioContext;
+    Scenario scenario;
+
+    @PostConstruct
+    private void init(){
+        PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
+        wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+        scenario=scenarioContext.getScenario();
     }
 
     private WebDriverWait wait = new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(30));
@@ -36,11 +43,13 @@ public class HRMAdminPageActions {
         Thread.sleep(2000);
         Actions action = new Actions(driverProvider.getInstance());
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         action.moveToElement(pageObjects.employmentStatus).perform();
         Thread.sleep(2000);
         pageObjects.users.click();
         Thread.sleep(2000);
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
     }
 
     public String randomNumber() {

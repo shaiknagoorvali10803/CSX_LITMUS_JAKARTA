@@ -23,15 +23,22 @@ public class HRMDashboardPageActions {
     @Inject
     ScreenshotUtils screenshotUtils;
 
+    @Inject
+    ScenarioContext scenarioContext;
+
+    Scenario scenario;
+
     @PostConstruct
-    private void setup() {
-        PageFactory.initElements(driverProvider.getInstance(), pageObjects);
-        driverWait = new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+    private void init(){
+        PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
+        driverWait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+        scenario=scenarioContext.getScenario();
     }
 
     public String verifyassignleave_link() throws InterruptedException {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.assignleave_link)).isDisplayed();
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         pageObjects.assignleave_link.click();
         Thread.sleep(2000);
         return pageObjects.assignleave_menu.getText();
@@ -40,6 +47,7 @@ public class HRMDashboardPageActions {
     public String verifyleavelist_link() throws InterruptedException {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.leavelist_link)).isDisplayed();
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         pageObjects.leavelist_link.click();
         Thread.sleep(2000);
         return pageObjects.leavelist_menu.getText();
@@ -50,6 +58,7 @@ public class HRMDashboardPageActions {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.dashboard_menu)).isDisplayed();
         Thread.sleep(2000);
         screenshotUtils.insertScreenshot("screenshot");
+        screenshotUtils.insertScreenshot1(scenario,"screenshot");
         return pageObjects.dashboard_menu.getText();
 
     }

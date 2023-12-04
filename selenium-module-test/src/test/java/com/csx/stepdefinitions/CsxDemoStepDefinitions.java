@@ -10,6 +10,7 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
@@ -30,10 +31,9 @@ public class CsxDemoStepDefinitions {
     @Inject
     ScenarioContext scenarioContext;
 
-    @Before
-    public void settingScenario(Scenario scenario) {
-        this.scenario=scenario;
-        scenarioContext.setScenario(scenario);
+    @PostConstruct
+    public void init() {
+    scenario=scenarioContext.getScenario();
     }
 
     @Given("I am on a {string} browser")
@@ -66,5 +66,7 @@ public class CsxDemoStepDefinitions {
     public void verifyCopyrightInformation() throws LoggingException {
         Assertions.assertTrue(pageActions.isHeaderImagePresent());
         screenshotUtils.insertScreenshot("CSX Home Page");
+        screenshotUtils.insertScreenshot1(scenario,"CSX Home Page");
+
     }
 }

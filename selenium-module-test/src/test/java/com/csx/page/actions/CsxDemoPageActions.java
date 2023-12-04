@@ -20,12 +20,13 @@ public class CsxDemoPageActions {
   @Inject
   private WebDriverProvider driver;
 
-  Scenario scenario;
+
   @Inject
   ScreenshotUtils screenshotUtils;
 
   @Inject
   ScenarioContext scenarioContext;
+  Scenario scenario;
 
   @PostConstruct
   private void init(){
