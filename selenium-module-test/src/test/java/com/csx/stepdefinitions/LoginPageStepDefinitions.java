@@ -1,4 +1,4 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
 
 import com.csx.page.actions.HRMLoginPageActions;

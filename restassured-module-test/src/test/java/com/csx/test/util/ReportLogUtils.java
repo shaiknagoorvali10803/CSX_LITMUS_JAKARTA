@@ -7,12 +7,13 @@ import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import io.cucumber.java.Scenario;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-@ApplicationScoped
+@Singleton
 public class ReportLogUtils {
 
     public static Logger logger = LoggerFactory.getLogger(ReportLogUtils.class);

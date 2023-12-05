@@ -1,14 +1,11 @@
-package com.csx.stepDefinitions;
-
+package com.csx.stepdefinitions;
 
 
 import com.csx.page.actions.HRMDashboardPageActions;
 import com.csx.page.actions.HRMLoginPageActions;
 import com.csx.test.util.WebDriverProvider;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Then;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;

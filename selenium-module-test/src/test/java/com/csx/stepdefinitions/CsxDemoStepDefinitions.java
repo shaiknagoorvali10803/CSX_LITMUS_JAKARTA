@@ -1,11 +1,10 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
 import com.csx.page.actions.CsxDemoPageActions;
 import com.csx.test.util.LoggingException;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.SeleniumUtil;
 import com.csx.test.util.WebDriverProvider;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;

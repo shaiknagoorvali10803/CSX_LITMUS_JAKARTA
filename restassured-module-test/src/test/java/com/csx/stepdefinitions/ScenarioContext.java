@@ -1,9 +1,9 @@
 package com.csx.stepdefinitions;
 
-import com.csx.springConfig.annotation.GlueScopeBean;
 import io.cucumber.java.Scenario;
+import jakarta.inject.Singleton;
 
-@GlueScopeBean
+@Singleton
 public class ScenarioContext {
 
 	protected Scenario scenario;

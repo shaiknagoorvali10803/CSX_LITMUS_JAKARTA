@@ -1,17 +1,14 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
 import com.csx.page.actions.HomePageActions;
+import com.csx.stepdefinitions.ScenarioContext;
 import com.csx.test.util.WebDriverProvider;
-import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
 @ApplicationScoped
 public class HomeSteps {

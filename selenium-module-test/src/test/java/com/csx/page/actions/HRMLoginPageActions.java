@@ -1,11 +1,11 @@
 package com.csx.page.actions;
 
-import com.csx.stepDefinitions.ScenarioContext;
+import com.csx.page.objects.HRMLoginPageObjects;
+import com.csx.stepdefinitions.ScenarioContext;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.Scenario;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.openqa.selenium.support.PageFactory;

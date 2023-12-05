@@ -1,4 +1,4 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
 
 import com.csx.page.actions.GooglePageActions;
@@ -14,7 +14,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
-import org.openqa.selenium.support.PageFactory;
 
 import java.io.IOException;
 import java.time.Duration;

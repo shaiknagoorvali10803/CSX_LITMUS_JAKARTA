@@ -1,14 +1,14 @@
-package com.csx.page.actions;
+package com.csx.page.objects;
 
-import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Singleton;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 
 
-@ApplicationScoped
+@Singleton
 public class CsxDemoPageObjects {
 
   @FindBy(how = How.XPATH, using = "//*[@id=\"header_logo\"]/a/img")
-  WebElement csxImage;
+  public WebElement csxImage;
 }

@@ -85,7 +85,6 @@
 			<groupId>io.cucumber</groupId>
 			<artifactId>cucumber-junit-platform-engine</artifactId>
 			<version>${cucumber.version}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.cucumber/gherkin -->
@@ -123,7 +122,6 @@
 			<groupId>org.jboss.weld.se</groupId>
 			<artifactId>weld-se-core</artifactId>
 			<version>${weld.version}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter -->
@@ -131,7 +129,6 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
 			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite -->
@@ -148,7 +145,6 @@
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-params</artifactId>
 			<version>${junit-jupiter.version}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc8 -->
@@ -247,7 +243,6 @@
 			<groupId>io.rest-assured</groupId>
 			<artifactId>json-path</artifactId>
 			<version>4.5.1</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/io.rest-assured/xml-path -->
@@ -319,7 +314,6 @@
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-core</artifactId>
 			<version>2.2</version>
-			<scope>test</scope>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->

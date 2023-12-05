@@ -1,8 +1,9 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
 
 import com.csx.page.actions.GooglePageActions;
 import com.csx.page.actions.VisaPageActions;
+import com.csx.stepdefinitions.ScenarioContext;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.Scenario;

@@ -1,25 +1,13 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
-import com.aventstack.extentreports.cucumber.adapter.ExtentCucumberAdapter;
-import com.csx.test.util.FileHandlingUtil;
-import com.csx.test.util.VideoRecorder;
-import com.csx.utils.LoggingException;
 import com.csx.test.util.WebDriverProvider;
 import io.cucumber.java.After;
 
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import jakarta.inject.Inject;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class Hooks{
 	@Inject

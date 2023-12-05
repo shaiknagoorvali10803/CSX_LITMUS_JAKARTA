@@ -1,4 +1,4 @@
-package com.csx.stepDefinitions;
+package com.csx.stepdefinitions;
 
 import io.cucumber.java.Scenario;
 import jakarta.enterprise.context.ApplicationScoped;

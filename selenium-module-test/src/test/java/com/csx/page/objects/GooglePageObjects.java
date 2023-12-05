@@ -1,6 +1,5 @@
-package com.csx.page.actions;
+package com.csx.page.objects;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Singleton;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,12 +9,12 @@ import java.util.List;
 public class GooglePageObjects {
 
     @FindBy(name = "q")
-    WebElement searchBox;
+    public WebElement searchBox;
     @FindBy(css = "div.g")
-    List<WebElement> results;
+    public List<WebElement> results;
 
     @FindBy(name = "btnK")
-    List<WebElement> searchBtns;
+    public List<WebElement> searchBtns;
 
 
 
