@@ -1,4 +1,3 @@
-@demoFeature
 Feature: CSX Demo-Signal Insepction Test Hierarchy
 
   @DataExist

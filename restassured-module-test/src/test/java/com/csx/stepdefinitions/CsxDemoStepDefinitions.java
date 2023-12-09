@@ -27,28 +27,33 @@ public class CsxDemoStepDefinitions {
   private static final Logger LOGGER = LoggerFactory.getLogger(CsxDemoStepDefinitions.class);
   @Inject
   ReportLogUtils reportLogUtils;
-  String auth_url= AppConfigHolder.getInstance().auth_qa_url();
+  String auth_url= AppConfigHolder.getInstance().auth_url();
 
-  String hierarchy_api_endpoint=AppConfigHolder.getInstance().hierarchy_qa_api_endpoint();
+  String hierarchy_api_endpoint=AppConfigHolder.getInstance().hierarchy_api_endpoint();
 
   private static Properties properties = null;
 
-  Scenario scenario;
   @Inject
   ScenarioContext scenarioContext;
-
-  @Before
-  public void settingScenario(Scenario scenario) {
-    this.scenario=scenario;
-    scenarioContext.setScenario(scenario);
-  }
 
   @Then("Validate Director in Signal Insepction Test Hierarchy with the proxy {string}")
   public void validateDirectorinfo(String ProxyUser) throws IOException, InterruptedException, JSONException {
 
     // Generate OAuth Token
     RestAssured.baseURI = auth_url;
-    Response response2 = RestAssured.given().auth().preemptive().basic("wInHKyZUjw2HdLAFvZMUOiHVKzkafQTP", "8AffmsFDLxA3NkRY")
+    System.out.println("End point ==> "+ hierarchy_api_endpoint);
+    System.out.println("Authentication URL  ==> "+ auth_url);
+    System.out.println(" Manager RACF Search ==> " + ProxyUser);
+
+    reportLogUtils.addLog("End point ==> "+ hierarchy_api_endpoint);
+    reportLogUtils.addLog("Authentication URL  ==> "+ auth_url);
+    reportLogUtils.addLog(" Manager RACF Search ==> " + ProxyUser);
+
+    reportLogUtils.addTextLog(scenarioContext.getScenario(),"End point ==> "+ hierarchy_api_endpoint);
+    reportLogUtils.addTextLog(scenarioContext.getScenario(),"Authentication URL  ==> "+ auth_url);
+    reportLogUtils.addTextLog(scenarioContext.getScenario(),"Manager RACF Search ==> " + ProxyUser);
+
+    /*Response response2 = RestAssured.given().auth().preemptive().basic("wInHKyZUjw2HdLAFvZMUOiHVKzkafQTP", "8AffmsFDLxA3NkRY")
             .contentType("application/x-www-form-urlencoded").formParam("grant_type", "client_credentials").formParam("scope", "openid").when().post();
     reportLogUtils.addLog("OAuth Response: " + response2.asString());
     System.out.println("\nOAuth Response: " + response2.asString());
@@ -58,7 +63,7 @@ public class CsxDemoStepDefinitions {
 
     JSONObject jsonObject = new JSONObject(response2.getBody().asString());
     String accessToken = jsonObject.get("access_token").toString();
-    reportLogUtils.addTextLog(scenario,"Access Token is : " + accessToken);
+    reportLogUtils.addTextLog(scenarioContext.getScenario(), "Access Token is : " + accessToken);
     String jsonBody = new String(Files.readAllBytes(Paths.get(".\\src\\test\\resources\\JSON\\DirectorHierarchyAPIPyload.json")));
 
     RestAssured.baseURI = hierarchy_api_endpoint;
@@ -81,6 +86,6 @@ public class CsxDemoStepDefinitions {
     Thread.sleep(10000);
     JsonPath jsonResponseEvaluator = response.jsonPath();
     List<String> directorname = jsonResponseEvaluator.get("userHierarchyList.name");
-    reportLogUtils.addListLog(scenario,"directornames" ,directorname);
+    reportLogUtils.addListLog(scenarioContext.getScenario(), "directornames" ,directorname);*/
   }
 }
