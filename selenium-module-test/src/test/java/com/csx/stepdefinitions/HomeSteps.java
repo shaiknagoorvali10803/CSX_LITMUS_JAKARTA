@@ -19,14 +19,8 @@ public class HomeSteps {
 
     protected WebDriverWait wait;
 
-    Scenario scenario;
     @Inject
     ScenarioContext scenarioContext;
-
-    @PostConstruct
-    public void settingScenario() {
-        scenario=scenarioContext.getScenario();
-    }
 
     @Given("I am Google Page")
     public void launchSite() {

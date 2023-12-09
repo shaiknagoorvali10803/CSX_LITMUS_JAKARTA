@@ -1,8 +1,8 @@
 package com.csx.test.util;
 
 
+import com.csx.utils.AppConfigHolder;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +29,7 @@ import java.util.Optional;
 @Singleton
 public class WebDriverProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverProvider.class);
-    private static final String BUILD_TOOL_RUN = SeleniumUtil.setRemoteExecution(System.getProperty("buildToolRun"));
+    private static final String BUILD_TOOL_RUN = SeleniumUtil.setGridExecutionMode(System.getProperty("buildToolRun"));
     private static final String HEADLESS = SeleniumUtil.setHeadlessProperty(System.getProperty("headless"));
 
     //private static final String SELENIUM_GRID_URL = "http://selenium.apps.ocpjaxd003.csx.com/";
@@ -51,6 +51,21 @@ public class WebDriverProvider {
             // FirefoxDriverManager.firefoxdriver().setup();
             // EdgeDriverManager.edgedriver().setup();
         }
+        String browser = AppConfigHolder.getInstance().browser();
+            switch (browser) {
+                case "chrome":
+                    generateWebDriver(BrowserType.CHROME);
+                    break;
+                case "edge":
+                    generateWebDriver(BrowserType.EDGE);
+                    break;
+                case "firefox":
+                    generateWebDriver(BrowserType.FIRE_FOX);
+                    break;
+                default:
+                    generateWebDriver(BrowserType.CHROME);
+                    break;
+            }
     }
 
     public enum BrowserType {
@@ -153,6 +168,7 @@ public class WebDriverProvider {
         chromeOptions.setExperimentalOption("prefs", chromePrefs);
         if (BooleanUtils.toBoolean(HEADLESS)||BooleanUtils.toBoolean(headless)) {
             chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--window-size=1920,1080");
         }
         if (BooleanUtils.toBoolean(BUILD_TOOL_RUN)) {
             try {
@@ -185,6 +201,7 @@ public class WebDriverProvider {
         edgeOptions.setExperimentalOption("prefs", edgePrefs);
         if (BooleanUtils.toBoolean(HEADLESS)||BooleanUtils.toBoolean(headless)) {
             edgeOptions.addArguments("--headless");
+            edgeOptions.addArguments("--window-size=1920,1080");
         }
         if (BooleanUtils.toBoolean(BUILD_TOOL_RUN)) {
             try {
@@ -220,6 +237,7 @@ public class WebDriverProvider {
         firefoxOptions.addArguments("--private");
         if (BooleanUtils.toBoolean(HEADLESS)||BooleanUtils.toBoolean(headless)) {
             firefoxOptions.addArguments("--headless");
+            firefoxOptions.addArguments("--window-size=1920,1080");
         }
         if (BooleanUtils.toBoolean(BUILD_TOOL_RUN)) {
             try {

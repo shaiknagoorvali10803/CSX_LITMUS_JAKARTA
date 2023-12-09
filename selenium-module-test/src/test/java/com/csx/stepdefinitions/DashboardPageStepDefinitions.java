@@ -20,15 +20,10 @@ public class DashboardPageStepDefinitions {
   @Inject
   HRMDashboardPageActions dashboard;
 
-    Scenario scenario;
     @Inject
     ScenarioContext scenarioContext;
 
-    @PostConstruct
-    public void settingScenario() {
-        scenario=scenarioContext.getScenario();
-    }
-	  
+
   @Then("i will veryfy the Dashboard content Apple leave")
   public void user_should_be_able_verify_applyleave() throws InterruptedException {
 	  login.verifyLoginAsValidUser();

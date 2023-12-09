@@ -7,20 +7,10 @@ import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
 
 @LoadPolicy(LoadType.MERGE)
-@Sources({"classpath:AppConfig.properties",})
+@Sources({"classpath:application-${environment}.properties",})
 public interface AppConfig extends Config, Mutable {
-
-  @Key("environment")
-  String environment();
-
-  @Key("application.qa.url")
-  String applicationMELQAURL();
-
-  @Key("application.stage.url")
-  String applicationMELStageURL();
-
-  @Key("application.dev.url")
-  String applicationMELDevURL();
+  @Key("application.url")
+  String applicationUrl();
 
   @Key("browser")
   String browser();
@@ -39,10 +29,14 @@ public interface AppConfig extends Config, Mutable {
 
   @Key("googleurl")
   String googleurl();
-  @Key("remoteExecution")
-  String remoteExecution();
+
+  @Key("gridExecution")
+  String gridExecution();
+
   @Key("headlessRun")
   String headlessRun();
+
+
 
 
 }

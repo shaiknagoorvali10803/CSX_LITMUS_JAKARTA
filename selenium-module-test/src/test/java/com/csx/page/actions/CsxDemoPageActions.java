@@ -25,12 +25,10 @@ public class CsxDemoPageActions {
 
   @Inject
   ScenarioContext scenarioContext;
-  Scenario scenario;
 
   @PostConstruct
   private void init(){
     PageFactory.initElements(this.driver.getInstance(), this.pageObjects);
-    scenario =scenarioContext.getScenario();
   }
 
   public boolean isHeaderImagePresent() {

@@ -27,13 +27,10 @@ public class HRMAdminPageActions {
 
     @Inject
     ScenarioContext scenarioContext;
-    Scenario scenario;
-
     @PostConstruct
     private void init(){
         PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
         wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
-        scenario=scenarioContext.getScenario();
     }
 
     private WebDriverWait wait = new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(30));
@@ -43,13 +40,13 @@ public class HRMAdminPageActions {
         Thread.sleep(2000);
         Actions action = new Actions(driverProvider.getInstance());
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         action.moveToElement(pageObjects.employmentStatus).perform();
         Thread.sleep(2000);
         pageObjects.users.click();
         Thread.sleep(2000);
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
     }
 
     public String randomNumber() {

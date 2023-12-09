@@ -35,17 +35,6 @@ public class SeleniumUtil {
     public static final int DRIVER_WAIT_TIME_IN_SECS = 30;
     private static int maxSyncTime = 60;
 
-    public static final String setApplicationURL(String environment) {
-        String url = "";
-        if ((environment == null ? AppConfigHolder.getInstance().environment() : environment).equalsIgnoreCase("QA")) {
-            url = AppConfigHolder.getInstance().applicationMELQAURL();
-        } else if ((environment == null ? AppConfigHolder.getInstance().environment() : environment).equalsIgnoreCase("DEV")) {
-            url = AppConfigHolder.getInstance().applicationMELDevURL();
-        } else if ((environment == null ? AppConfigHolder.getInstance().environment() : environment).equalsIgnoreCase("STG")) {
-            url = AppConfigHolder.getInstance().applicationMELStageURL();
-        }
-        return url;
-    }
 
     public static final String setHeadlessProperty(String headlessMode) {
         String isHeadLessSel = null;
@@ -53,9 +42,9 @@ public class SeleniumUtil {
         return isHeadLessSel;
     }
 
-    public static final String setRemoteExecution(String remoteRunMode) {
+    public static final String setGridExecutionMode(String gridExecutionMode) {
         String isRemoteExecutionSel = null;
-        isRemoteExecutionSel= remoteRunMode == null ? AppConfigHolder.getInstance().remoteExecution() : remoteRunMode;
+        isRemoteExecutionSel= gridExecutionMode == null ? AppConfigHolder.getInstance().gridExecution() : gridExecutionMode;
         return isRemoteExecutionSel;
     }
 

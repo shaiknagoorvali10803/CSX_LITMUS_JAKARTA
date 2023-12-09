@@ -33,21 +33,14 @@ public class VisaSteps {
     @Inject
     ScenarioContext scenarioContext;
 
-    Scenario scenario;
     @Inject
     ScreenshotUtils screenshotUtils;
-
-
-    @PostConstruct
-    public void settingScenario() {
-        scenario=scenarioContext.getScenario();
-    }
 
     @Given("I am on VISA registration form")
     public void launchSite() throws InterruptedException {
         this.driverProvider.getInstance().navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
     }
 
     @When("I select my from country {string} and to country {string}")
@@ -78,7 +71,7 @@ public class VisaSteps {
     @And("I submit the form")
     public void submit() throws InterruptedException {
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         this.registrationPage.submit();
     }
 
@@ -86,7 +79,7 @@ public class VisaSteps {
     public void verifyConfirmationNumber() throws InterruptedException {
         boolean isEmpty = StringUtils.isEmpty(this.registrationPage.getConfirmationNumber().trim());
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         Assert.assertFalse(isEmpty);
         Thread.sleep(2000);
     }

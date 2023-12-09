@@ -26,23 +26,21 @@ public class HRMLoginPageActions {
 
     @Inject
     ScenarioContext scenarioContext;
-    Scenario scenario;
     @PostConstruct
     private void init(){
         PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
         driverWait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
-        scenario=scenarioContext.getScenario();
     }
 
     public void enterCredentials(String username, String password) {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.txtUsername)).isDisplayed();
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.txtPassword)).isDisplayed();
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         pageObjects.txtUsername.sendKeys(username);
         pageObjects.txtPassword.sendKeys(password);
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
 
     }
     public void clickOnLoginButton() {
@@ -51,14 +49,14 @@ public class HRMLoginPageActions {
     public String getInvalidCredentialsMessage() {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.lblInvalidCredentials)).isDisplayed();
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         return pageObjects.lblInvalidCredentials.getText();
     }
 
     public void logout() throws InterruptedException {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.lblWelcome)).isDisplayed();
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         pageObjects.lblWelcome.click();
         Thread.sleep(2000);
         pageObjects.lnkLogout.click();
@@ -72,7 +70,7 @@ public class HRMLoginPageActions {
     public boolean isLoginFailedErrorDisplayed() {
         driverWait.until(ExpectedConditions.visibilityOf(pageObjects.lblInvalidCredentials));
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         return pageObjects.lblInvalidCredentials.isDisplayed();
     }
 

@@ -50,7 +50,7 @@ public class Hooks{
 
 	@Before("not (@Chrome or @IE or @Safari or @Firefox or @Edge)")
 	public void defaultBrowser(final Scenario scenario) throws Exception {
-		driverProvider.generateWebDriver(WebDriverProvider.BrowserType.CHROME, true);
+		//driverProvider.generateWebDriver(WebDriverProvider.BrowserType.CHROME);
 		scenarioContext.setScenario(scenario);
 	}
 

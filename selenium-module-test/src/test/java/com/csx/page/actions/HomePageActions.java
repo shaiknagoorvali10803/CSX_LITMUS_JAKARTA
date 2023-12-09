@@ -31,13 +31,11 @@ public class HomePageActions {
 
     @Inject
     ScenarioContext scenarioContext;
-    Scenario scenario;
 
     @PostConstruct
     private void init(){
         PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
         wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
-        scenario=scenarioContext.getScenario();
     }
 
     public void goTo(){
@@ -47,7 +45,7 @@ public class HomePageActions {
     public void search(final String keyword) throws InterruptedException {
         pageObjects.searchBox.sendKeys(keyword);
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         pageObjects.searchBox.sendKeys(Keys.TAB);
         pageObjects.searchBtns
                 .stream()
@@ -56,7 +54,7 @@ public class HomePageActions {
                 .ifPresent(WebElement::click);
         Thread.sleep(3000);
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
     }
 
 }

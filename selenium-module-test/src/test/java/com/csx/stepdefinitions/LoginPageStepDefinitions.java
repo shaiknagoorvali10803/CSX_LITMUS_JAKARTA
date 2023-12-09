@@ -18,16 +18,10 @@ public class LoginPageStepDefinitions {
 
   @Inject
   HRMLoginPageActions login;
-
-    Scenario scenario;
     @Inject
     ScenarioContext scenarioContext;
 
-    @PostConstruct
-    public void settingScenario() {
-        scenario=scenarioContext.getScenario();
-    }
-	
+
   @Given("I have browser opened and url is navigated")
   public void i_have_browser_opened_and_url_is_navigated() {
 	 driverProvider.getInstance().get("https://opensource-demo.orangehrmlive.com/");

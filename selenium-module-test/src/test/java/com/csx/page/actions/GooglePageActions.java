@@ -30,13 +30,11 @@ public class GooglePageActions {
 
     @Inject
     ScenarioContext scenarioContext;
-    Scenario scenario;
 
     @PostConstruct
     private void init(){
         PageFactory.initElements(this.driver.getInstance(), this.pageObjects);
         wait= new WebDriverWait(driver.getInstance(), Duration.ofSeconds(60));
-        scenario =scenarioContext.getScenario();
     }
 
     public void goTo() throws InterruptedException {
@@ -46,7 +44,7 @@ public class GooglePageActions {
     public void search(final String keyword) {
         pageObjects.searchBox.sendKeys(keyword);
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         pageObjects.searchBox.sendKeys(Keys.TAB);
         pageObjects.searchBtns
                 .stream()

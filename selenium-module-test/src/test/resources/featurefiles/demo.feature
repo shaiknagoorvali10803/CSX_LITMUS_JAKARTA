@@ -1,4 +1,4 @@
-@Chrome
+#@Chrome
 Feature: CSX Demo
 A demonstration using csx.com
 

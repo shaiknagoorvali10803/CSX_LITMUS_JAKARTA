@@ -26,14 +26,8 @@ public class CsxDemoStepDefinitions {
 
     @Inject
     ScreenshotUtils screenshotUtils;
-    Scenario scenario;
     @Inject
     ScenarioContext scenarioContext;
-
-    @PostConstruct
-    public void init() {
-    scenario=scenarioContext.getScenario();
-    }
 
     @Given("I am on a {string} browser")
     public void determineBrowserType(final String browserType) {
@@ -65,7 +59,7 @@ public class CsxDemoStepDefinitions {
     public void verifyCopyrightInformation() throws LoggingException {
         Assertions.assertTrue(pageActions.isHeaderImagePresent());
         screenshotUtils.insertScreenshot("CSX Home Page");
-        screenshotUtils.insertScreenshot1(scenario,"CSX Home Page");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"CSX Home Page");
 
     }
 }

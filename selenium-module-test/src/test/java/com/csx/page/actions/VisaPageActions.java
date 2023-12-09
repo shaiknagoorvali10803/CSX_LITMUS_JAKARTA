@@ -31,13 +31,11 @@ public class VisaPageActions {
 
     @Inject
     ScenarioContext scenarioContext;
-    Scenario scenario;
 
     @PostConstruct
     private void init(){
         PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
         wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
-        scenario=scenarioContext.getScenario();
     }
 
     public void setNames(String firstName, String lastName) {
@@ -55,7 +53,7 @@ public class VisaPageActions {
         new Select(pageObjects.day).selectByVisibleText(String.valueOf(localDate.getDayOfMonth()));
         new Select(pageObjects.month).selectByValue(localDate.getMonth().toString());
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenario,"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
     }
 
     public void setContactDetails(String email, String phone) {
