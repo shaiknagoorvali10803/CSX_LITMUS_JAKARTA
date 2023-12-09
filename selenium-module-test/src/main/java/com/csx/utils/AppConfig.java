@@ -7,7 +7,7 @@ import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
 
 @LoadPolicy(LoadType.MERGE)
-@Sources({"classpath:application-${environment}.properties",})
+@Sources({"classpath:application-${environment}.properties"})
 public interface AppConfig extends Config, Mutable {
   @Key("application.url")
   String applicationUrl();
