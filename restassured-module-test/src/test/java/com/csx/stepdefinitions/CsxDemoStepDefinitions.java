@@ -26,15 +26,15 @@ import java.util.Properties;
 public class CsxDemoStepDefinitions {
   private static final Logger LOGGER = LoggerFactory.getLogger(CsxDemoStepDefinitions.class);
   @Inject
-  ReportLogUtils reportLogUtils;
-  String auth_url= AppConfigHolder.getInstance().auth_url();
+  private ReportLogUtils reportLogUtils;
+  private String auth_url= AppConfigHolder.getInstance().auth_url();
 
-  String hierarchy_api_endpoint=AppConfigHolder.getInstance().hierarchy_api_endpoint();
+  private String hierarchy_api_endpoint=AppConfigHolder.getInstance().hierarchy_api_endpoint();
 
   private static Properties properties = null;
 
   @Inject
-  ScenarioContext scenarioContext;
+  private ScenarioContext scenarioContext;
 
   @Then("Validate Director in Signal Insepction Test Hierarchy with the proxy {string}")
   public void validateDirectorinfo(String ProxyUser) throws IOException, InterruptedException, JSONException {
