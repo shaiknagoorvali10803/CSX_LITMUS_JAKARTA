@@ -10,6 +10,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,27 +19,29 @@ import java.time.Duration;
 
 @Singleton
 public class GooglePageActions {
+    private WebDriver driver;
     @Inject
-    WebDriverProvider driver;
+    private WebDriverProvider driverProvider;
     @Inject
-    ScreenshotUtils screenshotUtils;
+    private ScreenshotUtils screenshotUtils;
     @Inject
-    GooglePageObjects pageObjects;
+    private GooglePageObjects pageObjects;
 
-    WebDriverWait wait;
+    private WebDriverWait wait;
     String googleurl = AppConfigHolder.getInstance().googleurl();
 
     @Inject
-    ScenarioContext scenarioContext;
+    private ScenarioContext scenarioContext;
 
     @PostConstruct
     private void init(){
-        PageFactory.initElements(this.driver.getInstance(), this.pageObjects);
-        wait= new WebDriverWait(driver.getInstance(), Duration.ofSeconds(60));
+        driver=driverProvider.getInstance();
+        PageFactory.initElements(driver, this.pageObjects);
+        wait= new WebDriverWait(driver, Duration.ofSeconds(60));
     }
 
     public void goTo() throws InterruptedException {
-        driver.getInstance().get(googleurl);
+        driver.get(googleurl);
     }
 
     public void search(final String keyword) {

@@ -5,10 +5,10 @@ import com.csx.stepdefinitions.ScenarioContext;
 import com.csx.test.util.ScreenshotUtils;
 import com.csx.test.util.SeleniumUtil;
 import com.csx.test.util.WebDriverProvider;
-import io.cucumber.java.Scenario;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -20,22 +20,25 @@ import java.util.Objects;
 @Singleton
 public class VisaPageActions {
     @Inject
-    ScreenshotUtils screenshotUtils;
+    private ScreenshotUtils screenshotUtils;
+
+   private WebDriver driver;
     @Inject
-    WebDriverProvider driverProvider;
+    private WebDriverProvider driverProvider;
 
     @Inject
-    VisaPageObjects pageObjects;
+    private VisaPageObjects pageObjects;
 
-    WebDriverWait wait;
+    private WebDriverWait wait;
 
     @Inject
-    ScenarioContext scenarioContext;
+    private ScenarioContext scenarioContext;
 
     @PostConstruct
     private void init(){
-        PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
-        wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+        driver=driverProvider.getInstance();
+        PageFactory.initElements(driver, this.pageObjects);
+        wait=new WebDriverWait(driver, Duration.ofSeconds(60));
     }
 
     public void setNames(String firstName, String lastName) {
@@ -66,7 +69,7 @@ public class VisaPageActions {
     }
 
     public void submit() {
-        SeleniumUtil.clickElementByJS(driverProvider.getInstance(), pageObjects.submit);
+        SeleniumUtil.clickElementByJS(driver, pageObjects.submit);
     }
 
     public String getConfirmationNumber() {

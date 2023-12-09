@@ -14,20 +14,27 @@ import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
 import java.time.Duration;
 
 public class GoogleSteps {
     @Inject
-    protected WebDriverProvider driverProvider;
+    private WebDriverProvider driverProvider;
+    private WebDriver driver;
     @Inject
     private GooglePageActions googlePage;
     @Inject
-    ScenarioContext scenarioContext;
+    private ScenarioContext scenarioContext;
 
     @Inject
-    ScreenshotUtils screenshotUtils;
+    private ScreenshotUtils screenshotUtils;
+
+    @PostConstruct
+    private  void init(){
+        driver=driverProvider.getInstance();
+    }
 
     @Given("I am on the google site")
     public void launchSite() throws InterruptedException {
@@ -51,12 +58,12 @@ public class GoogleSteps {
     @Then("I should see at least {int} results")
     public void verifyResults(int count) throws InterruptedException, IOException {
         Assertions.assertTrue(this.googlePage.getCount() >= count);
-        SeleniumUtil.clickElementByJS(driverProvider.getInstance(), "//a[normalize-space()='Images']");
+        SeleniumUtil.clickElementByJS(driver, "//a[normalize-space()='Images']");
         screenshotUtils.insertScreenshot("screenshot");
         screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         Thread.sleep(3000);
         System.out.println("Current Thread Number " + Thread.currentThread().getThreadGroup() + "thread number" + Thread.currentThread().getId());
-        driverProvider.getInstance().findElement(By.xpath("//a[normalize-space()='Videos']")).click();
+        driver.findElement(By.xpath("//a[normalize-space()='Videos']")).click();
         screenshotUtils.insertScreenshot("screenshot");
         screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         Thread.sleep(3000);

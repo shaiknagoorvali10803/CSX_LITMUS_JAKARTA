@@ -16,6 +16,7 @@ import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
 import java.time.LocalDate;
@@ -23,24 +24,30 @@ import java.time.LocalDate;
 public class VisaSteps {
 
     @Inject
-    WebDriverProvider driverProvider;
+    private WebDriverProvider driverProvider;
+    private WebDriver driver;
 
     @Inject
-    VisaPageActions registrationPage;
+    private VisaPageActions registrationPage;
 
     @Inject
-    GooglePageActions googlePage;
+    private GooglePageActions googlePage;
     @Inject
-    ScenarioContext scenarioContext;
+    private ScenarioContext scenarioContext;
 
     @Inject
-    ScreenshotUtils screenshotUtils;
+    private ScreenshotUtils screenshotUtils;
+
+    @PostConstruct
+    private void init() {
+        driver = driverProvider.getInstance();
+    }
 
     @Given("I am on VISA registration form")
     public void launchSite() throws InterruptedException {
-        this.driverProvider.getInstance().navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
+        this.driver.navigate().to("https://vins-udemy.s3.amazonaws.com/sb/visa/udemy-visa.html");
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(), "screenshot");
     }
 
     @When("I select my from country {string} and to country {string}")
@@ -71,7 +78,7 @@ public class VisaSteps {
     @And("I submit the form")
     public void submit() throws InterruptedException {
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(), "screenshot");
         this.registrationPage.submit();
     }
 
@@ -79,7 +86,7 @@ public class VisaSteps {
     public void verifyConfirmationNumber() throws InterruptedException {
         boolean isEmpty = StringUtils.isEmpty(this.registrationPage.getConfirmationNumber().trim());
         screenshotUtils.insertScreenshot("screenshot");
-        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
+        screenshotUtils.insertScreenshot1(scenarioContext.getScenario(), "screenshot");
         Assert.assertFalse(isEmpty);
         Thread.sleep(2000);
     }

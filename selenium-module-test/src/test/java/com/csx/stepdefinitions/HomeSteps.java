@@ -9,18 +9,25 @@ import io.cucumber.java.en.When;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 @ApplicationScoped
 public class HomeSteps {
     @Inject
     private HomePageActions homePage;
     @Inject
-    protected WebDriverProvider driverProvider;
+    private WebDriverProvider driverProvider;
+    private WebDriver driver;
 
-    protected WebDriverWait wait;
+    private WebDriverWait wait;
 
     @Inject
-    ScenarioContext scenarioContext;
+    private ScenarioContext scenarioContext;
+
+    @PostConstruct
+    private  void init(){
+        driver=driverProvider.getInstance();
+    }
 
     @Given("I am Google Page")
     public void launchSite() {

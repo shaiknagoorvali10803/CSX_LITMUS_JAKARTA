@@ -12,6 +12,7 @@ import io.cucumber.java.en.When;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,37 +23,42 @@ public class CsxDemoStepDefinitions {
     @Inject
     private CsxDemoPageActions pageActions;
     @Inject
-    private WebDriverProvider driver;
-
+    private WebDriverProvider driverProvider;
+    private WebDriver driver;
     @Inject
-    ScreenshotUtils screenshotUtils;
+    private ScreenshotUtils screenshotUtils;
     @Inject
-    ScenarioContext scenarioContext;
-
+    private ScenarioContext scenarioContext;
+    
+    @PostConstruct
+    private  void init(){
+        driver=driverProvider.getInstance();
+    }
+    
     @Given("I am on a {string} browser")
     public void determineBrowserType(final String browserType) {
         switch (browserType) {
             case "mobile":
                 LOGGER.info("resizing window size for mobile");
-                SeleniumUtil.resizeWindowForMobile(driver.getInstance());
+                SeleniumUtil.resizeWindowForMobile(driver);
                 break;
             case "tablet":
                 LOGGER.info("resizing window size for tablet");
-                SeleniumUtil.resizeWindowForTablet(driver.getInstance());
+                SeleniumUtil.resizeWindowForTablet(driver);
                 break;
             case "desktop":
                 LOGGER.info("resizing window size for desktop");
             default:
                 SeleniumUtil.waitByTime(3000);
-                SeleniumUtil.maximizeWindow(driver.getInstance());
+                SeleniumUtil.maximizeWindow(driver);
                 break;
         }
     }
 
     @When("I navigate to csx.com")
     public void navigateToCsxWebsite() throws LoggingException, InterruptedException {
-        driver.getInstance().get("https://www.csx.com");
-        driver.getInstance().manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
+        driver.get("https://www.csx.com");
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(60));
     }
 
     @Then("I should see the copyright information")

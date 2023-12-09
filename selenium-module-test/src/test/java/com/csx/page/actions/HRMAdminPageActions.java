@@ -8,6 +8,7 @@ import io.cucumber.java.Scenario;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -16,29 +17,30 @@ import java.time.Duration;
 import java.util.Random;
 @Singleton
 public class HRMAdminPageActions {
+    WebDriver driver;
     @Inject
-    WebDriverProvider driverProvider;
+    private WebDriverProvider driverProvider;
     private WebDriverWait driverWait;
     @Inject
-    HRMAdminPageObjects pageObjects;
+    private HRMAdminPageObjects pageObjects;
+    private WebDriverWait wait;
 
     @Inject
-    ScreenshotUtils screenshotUtils;
+    private ScreenshotUtils screenshotUtils;
 
     @Inject
     ScenarioContext scenarioContext;
     @PostConstruct
     private void init(){
-        PageFactory.initElements(this.driverProvider.getInstance(), this.pageObjects);
-        wait=new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(60));
+        driver=driverProvider.getInstance();
+        PageFactory.initElements(driver, this.pageObjects);
+        wait=new WebDriverWait(driver, Duration.ofSeconds(60));
     }
-
-    private WebDriverWait wait = new WebDriverWait(driverProvider.getInstance(), Duration.ofSeconds(30));
 
     public void navigateToUserManagement() throws InterruptedException {
         pageObjects.admin_link.click();
         Thread.sleep(2000);
-        Actions action = new Actions(driverProvider.getInstance());
+        Actions action = new Actions(driver);
         screenshotUtils.insertScreenshot("screenshot");
         screenshotUtils.insertScreenshot1(scenarioContext.getScenario(),"screenshot");
         action.moveToElement(pageObjects.employmentStatus).perform();

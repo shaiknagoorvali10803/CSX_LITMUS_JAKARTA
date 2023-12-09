@@ -9,6 +9,7 @@ import io.cucumber.java.Scenario;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
 @Singleton
@@ -17,21 +18,23 @@ public class CsxDemoPageActions {
   @Inject
   private CsxDemoPageObjects pageObjects;
 
+  private WebDriver driver;
   @Inject
-  private WebDriverProvider driver;
+  private WebDriverProvider driverProvider;
 
   @Inject
-  ScreenshotUtils screenshotUtils;
+  private ScreenshotUtils screenshotUtils;
 
   @Inject
-  ScenarioContext scenarioContext;
+  private ScenarioContext scenarioContext;
 
   @PostConstruct
   private void init(){
-    PageFactory.initElements(this.driver.getInstance(), this.pageObjects);
+    driver=driverProvider.getInstance();
+    PageFactory.initElements(driver, this.pageObjects);
   }
 
   public boolean isHeaderImagePresent() {
-    return SeleniumUtil.isElementDisplayed(driver.getInstance(),pageObjects.csxImage);
+    return SeleniumUtil.isElementDisplayed(driver,pageObjects.csxImage);
   }
 }
