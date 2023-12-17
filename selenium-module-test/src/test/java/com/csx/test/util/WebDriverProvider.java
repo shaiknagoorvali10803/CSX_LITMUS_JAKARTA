@@ -1,7 +1,7 @@
 package com.csx.test.util;
 
 
-import com.csx.utils.AppConfigHolder;
+import com.csx.util.AppConfigHolder;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
@@ -32,9 +32,9 @@ public class WebDriverProvider {
     private static final String BUILD_TOOL_RUN = SeleniumUtil.setGridExecutionMode(System.getProperty("buildToolRun"));
     private static final String HEADLESS = SeleniumUtil.setHeadlessProperty(System.getProperty("headless"));
 
-    //private static final String SELENIUM_GRID_URL = "http://selenium.apps.ocpjaxd003.csx.com/";
+    //private static final String SELENIUM_GRID_URL = AppConfigHolder.getInstance().selenium_grid_ul();
 
-    private static final String SELENIUM_GRID_URL = "http://192.168.56.1:4444";
+    private static final String SELENIUM_GRID_URL = AppConfigHolder.getInstance().selenium_grid_ul();
 
 
     private static final String USER_DIR = "user.dir";
@@ -51,21 +51,7 @@ public class WebDriverProvider {
             // FirefoxDriverManager.firefoxdriver().setup();
             // EdgeDriverManager.edgedriver().setup();
         }
-        String browser = AppConfigHolder.getInstance().browser();
-            switch (browser) {
-                case "chrome":
-                    generateWebDriver(BrowserType.CHROME);
-                    break;
-                case "edge":
-                    generateWebDriver(BrowserType.EDGE);
-                    break;
-                case "firefox":
-                    generateWebDriver(BrowserType.FIRE_FOX);
-                    break;
-                default:
-                    generateWebDriver(BrowserType.CHROME);
-                    break;
-            }
+
     }
 
     public enum BrowserType {
@@ -87,42 +73,70 @@ public class WebDriverProvider {
 
     public WebDriver getInstance() {
         if (instance == null) {
-            generateWebDriver(BrowserType.CHROME);
+            generateWebDriver(null);
         }
         return instance;
     }
 
+    private void generateWebDriverFromPropertiesFile(){
+        WebDriver driver;
+        String browser = AppConfigHolder.getInstance().browser();
+        switch (browser) {
+            case "chrome":
+             default:
+                 driver = generateChromeWebDriver(BooleanUtils.toBoolean(HEADLESS));
+                 break;
+            case "edge":
+                driver=generateEdgeDriver(BooleanUtils.toBoolean(HEADLESS));
+                break;
+            case "firefox":
+                driver=generateFirefoxDriver(BooleanUtils.toBoolean(HEADLESS));
+                break;
+        }
+        instance=driver;
+    }
+
     public void generateWebDriver(BrowserType browserType) {
+        if(browserType==null){
+            generateWebDriverFromPropertiesFile();
+        }
+        else{
         generateWebDriver(browserType, null);
+        }
     }
 
     public void generateWebDriver(BrowserType browserType, final Boolean headless) {
-        WebDriver driver = null;
-        boolean isHeadless = Optional.ofNullable(headless).isPresent() ? headless : isHeadlessRun();
-        BrowserType bt = getBrowserTypeUsingSystemVar();
-        if (Optional.ofNullable(bt).isPresent()) {
-            browserType = bt;
+        if(browserType==null){
+            generateWebDriverFromPropertiesFile();
+        }
+        else{
+            WebDriver driver = null;
+            boolean isHeadless = Optional.ofNullable(headless).isPresent() ? headless : isHeadlessRun();
+            BrowserType bt = getBrowserTypeUsingSystemVar();
+            if (Optional.ofNullable(bt).isPresent()) {
+                browserType = bt;
+            }
+
+            switch (browserType) {
+                case CHROME:
+                    driver = generateChromeWebDriver(isHeadless);
+                    break;
+                case FIRE_FOX:
+                    driver = generateFirefoxDriver(isHeadless);
+                    break;
+                case EDGE:
+                    driver = generateEdgeDriver(isHeadless);
+                    break;
+                default:
+                    driver = generateChromeWebDriver(isHeadless);
+                    break;
+            }
+
+            instance = driver;
+            instanceBrowserType = browserType;
         }
 
-        switch (browserType) {
-            case CHROME:
-                driver = generateChromeWebDriver(isHeadless);
-                break;
-            case FIRE_FOX:
-                driver = generateFirefoxDriver(isHeadless);
-                break;
-            case EDGE:
-                driver = generateEdgeDriver(isHeadless);
-                break;
-            default:
-                driver = generateChromeWebDriver(isHeadless);
-                break;
-        }
-
-        instance = driver;
-        instanceBrowserType = browserType;
     }
-
 
 
     private boolean isHeadlessRun() {
@@ -148,6 +162,7 @@ public class WebDriverProvider {
     }
 
     private static WebDriver generateChromeWebDriver(boolean headless) {
+        System.out.println("Running on chrome Browser");
         ChromeOptions chromeOptions = new ChromeOptions();
         //chromeOptions.setHeadless(BooleanUtils.toBoolean(headless));
         chromeOptions.addArguments("--proxy-server='direct://'");
@@ -184,6 +199,7 @@ public class WebDriverProvider {
 
 
     private static WebDriver generateEdgeDriver(boolean headless) {
+        System.out.println("Running on edge Browser");
         EdgeOptions edgeOptions = new EdgeOptions();
         edgeOptions.addArguments("--proxy-server='direct://'");
         edgeOptions.addArguments("--proxy-bypass-list=*");
@@ -216,6 +232,7 @@ public class WebDriverProvider {
     }
 
     private static WebDriver generateFirefoxDriver(boolean headless) {
+        System.out.println("Running on firefox Browser");
         String downloadFilepath = System.getProperty("user.dir");
         FirefoxProfile profile = new FirefoxProfile();
         profile.setAcceptUntrustedCertificates(true);
@@ -251,12 +268,4 @@ public class WebDriverProvider {
         return new FirefoxDriver(firefoxOptions);
     }
 
-    public BrowserType getInstanceBrowserType() {
-        // default it to Chrome
-        BrowserType result = BrowserType.CHROME;
-        if (instance != null) {
-            result = instanceBrowserType;
-        }
-        return result;
-    }
 }

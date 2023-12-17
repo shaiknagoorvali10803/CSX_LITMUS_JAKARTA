@@ -1,7 +1,6 @@
 package com.csx.test.util;
 
-import com.csx.utils.AppConfigHolder;
-import org.apache.commons.lang3.BooleanUtils;
+import com.csx.util.AppConfigHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.Dimension;

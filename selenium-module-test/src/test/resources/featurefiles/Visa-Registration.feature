@@ -1,5 +1,5 @@
-#@Chrome
 Feature: User visa registration feature
+
   Background:
     When I am Google Page
     Then Search for the Word "Nagoor"

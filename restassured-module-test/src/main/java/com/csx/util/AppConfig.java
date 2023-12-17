@@ -1,4 +1,4 @@
-package com.csx.utils;
+package com.csx.util;
 
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Config.LoadPolicy;

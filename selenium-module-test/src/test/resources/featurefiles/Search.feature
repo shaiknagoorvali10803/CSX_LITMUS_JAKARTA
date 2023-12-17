@@ -1,4 +1,4 @@
-#@Chrome
+@Chrome
 Feature: Google search
 
   Background:

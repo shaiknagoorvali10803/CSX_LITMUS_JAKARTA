@@ -1,4 +1,4 @@
-package com.csx.utils;
+package com.csx.util;
 
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Config.LoadPolicy;
@@ -35,6 +35,8 @@ public interface AppConfig extends Config, Mutable {
 
   @Key("headlessRun")
   String headlessRun();
+  @Key("selenium_grid_url")
+  String selenium_grid_ul();
 
 
 
