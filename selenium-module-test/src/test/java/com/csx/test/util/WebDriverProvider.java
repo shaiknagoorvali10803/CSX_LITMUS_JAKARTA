@@ -2,6 +2,7 @@ package com.csx.test.util;
 
 
 import com.csx.util.AppConfigHolder;
+import com.csx.util.PropertyHandler;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,13 +30,9 @@ import java.util.Optional;
 @Singleton
 public class WebDriverProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebDriverProvider.class);
-    private static final String BUILD_TOOL_RUN = SeleniumUtil.setGridExecutionMode(System.getProperty("buildToolRun"));
-    private static final String HEADLESS = SeleniumUtil.setHeadlessProperty(System.getProperty("headless"));
-
-    //private static final String SELENIUM_GRID_URL = AppConfigHolder.getInstance().selenium_grid_ul();
-
+    private static final String BUILD_TOOL_RUN = PropertyHandler.setGridExecutionMode(System.getProperty("buildToolRun"));
+    private static final String HEADLESS = PropertyHandler.setHeadlessProperty(System.getProperty("headless"));
     private static final String SELENIUM_GRID_URL = AppConfigHolder.getInstance().selenium_grid_ul();
-
 
     private static final String USER_DIR = "user.dir";
 

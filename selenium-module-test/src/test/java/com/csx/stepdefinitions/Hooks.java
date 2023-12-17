@@ -4,6 +4,7 @@ import com.csx.test.util.FileHandlingUtil;
 import com.csx.test.util.SeleniumUtil;
 import com.csx.test.util.VideoRecorder;
 import com.csx.test.util.WebDriverProvider;
+import com.csx.util.PropertyHandler;
 import io.cucumber.java.After;
 
 import io.cucumber.java.Before;
@@ -17,10 +18,10 @@ public class Hooks{
 	public static final String LOCAL_VIDEO_RECORD_FLAG = "localVideoRecord";
 	public static final String downloadPath = System.getProperty("user.dir");
 	public static final String videoFileType = "avi";
-
 	public static boolean localheadlessMode;
-	private static final String BUILD_TOOL_RUN = SeleniumUtil.setGridExecutionMode(System.getProperty("buildToolRun"));
-	private static final String HEADLESS = SeleniumUtil.setHeadlessProperty(System.getProperty("headless"));
+	private static final String BUILD_TOOL_RUN = PropertyHandler.setGridExecutionMode(System.getProperty("buildToolRun"));
+	private static final String HEADLESS = PropertyHandler.setHeadlessProperty(System.getProperty("headless"));
+
 	@Inject
 	private WebDriverProvider driverProvider;
 	@Inject

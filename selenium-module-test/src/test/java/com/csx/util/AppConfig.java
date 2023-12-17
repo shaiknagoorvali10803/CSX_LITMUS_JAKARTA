@@ -1,11 +1,12 @@
 package com.csx.util;
 
+import jakarta.inject.Singleton;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Config.LoadPolicy;
 import org.aeonbits.owner.Config.LoadType;
 import org.aeonbits.owner.Config.Sources;
 import org.aeonbits.owner.Mutable;
-
+@Singleton
 @LoadPolicy(LoadType.MERGE)
 @Sources({"classpath:application-${environment}.properties"})
 public interface AppConfig extends Config, Mutable {
