@@ -74,6 +74,7 @@ public class Hooks{
 
 	@Before("not (@Chrome or @Firefox or @Edge)")
 	public void defaultBrowser(final Scenario scenario) throws Exception {
+		driverProvider.generateWebDriver(WebDriverProvider.BrowserType.CHROME);
 		if (!BooleanUtils.toBoolean(BUILD_TOOL_RUN) && !BooleanUtils.toBoolean(HEADLESS)) {
 			localVideoRecord();
 		}

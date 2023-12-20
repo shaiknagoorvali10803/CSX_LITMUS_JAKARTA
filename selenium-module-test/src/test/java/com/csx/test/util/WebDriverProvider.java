@@ -70,43 +70,16 @@ public class WebDriverProvider {
 
     public WebDriver getInstance() {
         if (instance == null) {
-            generateWebDriver(null);
+            generateWebDriver(BrowserType.CHROME);
         }
         return instance;
     }
 
-    private void generateWebDriverFromPropertiesFile(){
-        WebDriver driver;
-        String browser = AppConfigHolder.getInstance().browser();
-        switch (browser) {
-            case "chrome":
-             default:
-                 driver = generateChromeWebDriver(BooleanUtils.toBoolean(HEADLESS));
-                 break;
-            case "edge":
-                driver=generateEdgeDriver(BooleanUtils.toBoolean(HEADLESS));
-                break;
-            case "firefox":
-                driver=generateFirefoxDriver(BooleanUtils.toBoolean(HEADLESS));
-                break;
-        }
-        instance=driver;
-    }
-
     public void generateWebDriver(BrowserType browserType) {
-        if(browserType==null){
-            generateWebDriverFromPropertiesFile();
-        }
-        else{
         generateWebDriver(browserType, null);
-        }
     }
 
     public void generateWebDriver(BrowserType browserType, final Boolean headless) {
-        if(browserType==null){
-            generateWebDriverFromPropertiesFile();
-        }
-        else{
             WebDriver driver = null;
             boolean isHeadless = Optional.ofNullable(headless).isPresent() ? headless : isHeadlessRun();
             BrowserType bt = getBrowserTypeUsingSystemVar();
@@ -131,8 +104,6 @@ public class WebDriverProvider {
 
             instance = driver;
             instanceBrowserType = browserType;
-        }
-
     }
 
 

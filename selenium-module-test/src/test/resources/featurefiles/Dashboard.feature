@@ -1,4 +1,4 @@
-@DashBoard
+@Chrome @DashBoard
 Feature: Dashboad Page Validation
 
   Scenario: Validating the login functionality

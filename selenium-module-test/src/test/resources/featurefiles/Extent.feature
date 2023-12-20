@@ -1,4 +1,4 @@
-@Chrome #@Headless
+@Chrome
 Feature: Google search
 
   Background:

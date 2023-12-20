@@ -1,4 +1,4 @@
-@login
+@Chrome @login
 Feature: Home Page Validation
 
   Scenario: Validating the login functionality

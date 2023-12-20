@@ -1,3 +1,4 @@
+@Chrome
 Feature: User visa registration feature
 
   Background:
